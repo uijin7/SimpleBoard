@@ -1,2 +1,12 @@
-package com.example.simpleboard.reply.db;public interface ReplyRepository {
+package com.example.simpleboard.reply.db;
+
+import com.example.simpleboard.post.db.PostEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+import java.util.Optional;
+
+public interface ReplyRepository extends JpaRepository<ReplyEntity, Long> {
+
+    List<ReplyEntity> findAllByPostIdAndStatusOrderByIdDesc(Long postId, String status);
 }
