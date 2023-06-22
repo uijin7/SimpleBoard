@@ -17,7 +17,7 @@ import javax.validation.constraints.Size;
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class PostRequest {
 
-    @Builder.Default
+//    @Builder.Default
     private Long boardId = 1L;
 
     @NotBlank

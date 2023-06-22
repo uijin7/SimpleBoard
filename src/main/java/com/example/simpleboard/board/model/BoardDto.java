@@ -23,7 +23,7 @@ public class BoardDto {
 
     private String status;
 
-    @Builder.Default
+//    @Builder.Default
     private List<PostDto> postList = List.of();
 
 }
