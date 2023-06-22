@@ -37,6 +37,7 @@ public class PostDto {
 
     private LocalDateTime postedAt;
 
+    @Builder.Default
     private List<ReplyDto> replyList = List.of();
 
 }
