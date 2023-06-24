@@ -9,13 +9,30 @@ spring:
 #    database: mysql
 #    generate-ddl: true
 
-  #  datasource:
-#    url: jdbc:mysql://localhost:3306/simple_board?useSSL=false&useUnicode=true&allowPublicKeyRetrieval=true
-#    driver-class-name: com.mysql.cj.jdbc.Driver
-#    username: uijin
-#    password: 1234
+
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://database-2.cx8i5g9qkraw.ap-northeast-2.rds.amazonaws.com:3306/simple_board?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-    username: admin
-    password: 12do0423
+    url: jdbc:mysql://localhost:3306/simple_board?useSSL=false&useUnicode=true&allowPublicKeyRetrieval=true
+    username: uijin
+    password: 1234
+#  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://database-2.cx8i5g9qkraw.ap-northeast-2.rds.amazonaws.com:3306/simple_board?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+#    username: admin
+#    password: 12do0423
+
+springdoc:
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  api-docs:
+    groups:
+      enabled: true
+  swagger-ui:
+    operations-sorter: alpha # alpha(알파벳 오름차순), method(HTTP메소드순)
+    tags-sorter: alpha # 태그 정렬 기준
+    path: /swagger-ui.html # html 문서 접속 경로
+    disable-swagger-default-url: true
+    display-query-params-without-oauth2: true
+    doc-expansion: none # tag, operation 펼치는 방식
+  paths-to-match:
+    - /**
