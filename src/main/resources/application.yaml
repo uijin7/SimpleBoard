@@ -9,6 +9,13 @@ spring:
 #    database: mysql
 #    generate-ddl: true
 
+  servlet:
+    multipart:
+      enabled: 'true'
+      max-request-size: 30MB
+      max-file-size: 10MB
+      location: C:\Users\user\IdeaProjects\simple-board
+
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -36,3 +43,20 @@ springdoc:
     doc-expansion: none # tag, operation 펼치는 방식
   paths-to-match:
     - /**
+
+cloud:
+  aws:
+    s3:
+      bucket: s3-simple-board
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+    credentials:
+      access-key:
+      secret-key:
+
+#org:
+#  zerock:
+#    upload:
+#      path: /home/ec2-user/upload
