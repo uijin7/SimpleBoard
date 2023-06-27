@@ -17,16 +17,16 @@ spring:
       location: C:\Users\user\IdeaProjects\simple-board
 
 
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/simple_board?useSSL=false&useUnicode=true&allowPublicKeyRetrieval=true
-    username: uijin
-    password: 1234
 #  datasource:
 #    driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://database-2.cx8i5g9qkraw.ap-northeast-2.rds.amazonaws.com:3306/simple_board?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-#    username: admin
-#    password: 12do0423
+#    url: jdbc:mysql://localhost:3306/simple_board?useSSL=false&useUnicode=true&allowPublicKeyRetrieval=true
+#    username: uijin
+#    password: 1234
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://db1.cx8i5g9qkraw.ap-northeast-2.rds.amazonaws.com:3306/simple_board?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: admin
+    password: 12do0423
 
 springdoc:
   default-consumes-media-type: application/json
