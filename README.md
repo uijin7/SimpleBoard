@@ -1,207 +1,216 @@
-﻿# SimpleBoard
+# SimpleBoard
 
-Spring Boot 기반 RESTful 멀티보드 게시판 시스템입니다. 여러 개의 게시판을 관리하고 각 게시판별로 게시물과 댓글을 등록, 조회, 수정, 삭제할 수 있는 백엔드 API 서비스입니다.
+Spring Boot 기반의 멀티 게시판 백엔드 서비스입니다.  
+게시판(Board) - 게시글(Post) - 댓글(Reply) 구조를 설계하고, CRUD API, 파일 업로드, 입력값 검증, Swagger 문서화, AWS 연동을 적용한 프로젝트입니다.
 
-## 📋 프로젝트 개요
+## 프로젝트 소개
 
-SimpleBoard는 학습 목적으로 설계된 게시판 플랫폼으로, 현대적인 Spring Boot 기술 스택을 활용하여 확장 가능하고 유지보수하기 쉬운 아키텍처를 제공합니다. 게시판, 게시물, 댓글의 계층 구조를 가지며, 각각에 대한 CRUD 작업을 RESTful API로 제공합니다.
+SimpleBoard는 게시판, 게시글, 댓글 도메인을 중심으로 백엔드 API를 구현한 프로젝트입니다.  
+단순 CRUD 구현에 그치지 않고, JPA 기반의 데이터 설계, Validation을 활용한 요청값 검증, Swagger를 통한 API 문서화, AWS 연동까지 경험하는 것을 목표로 개발했습니다.
 
-## ✨ 주요 기능
+- **프로젝트명**: SimpleBoard
+- **개발 형태**: 개인 프로젝트
+- **개발 기간**: 2023.06(완료) -> 2026.03(리뉴얼 중)
+- **배포 주소**: [작성]
+- **Swagger 주소**: `http://localhost:8080/swagger-ui.html`
 
-- **멀티 게시판 관리**: 여러 개의 독립적인 게시판 생성 및 관리
-- **게시물 관리**: 게시판별 게시물 작성, 조회, 수정, 삭제
-- **댓글 기능**: 게시물에 대한 댓글 추가 및 관리
-- **페이지네이션**: 대량의 게시물 조회 시 효율적인 페이지 처리
-- **파일 업로드**: 게시물에 첨부파일 업로드 기능 (최대 10MB)
-- **API 문서화**: Swagger UI를 통한 자동 API 문서 제공
-- **데이터 유효성 검증**: javax.validation을 이용한 입력값 검증
+## 주요 기능
 
-## 🛠️ 기술 스택
+- 여러 개의 게시판 생성 및 관리
+- 게시글 등록, 조회, 수정, 삭제
+- 댓글 등록, 조회, 삭제
+- 페이지네이션 기반 게시글 목록 조회
+- 첨부파일 업로드 기능
+- Swagger UI 기반 API 문서화
+- Validation 기반 입력값 검증
+
+## 기술 스택
 
 ### Backend
-- **Framework**: Spring Boot 2.7.12
-- **Language**: Java 11
-- **Build Tool**: Gradle
-- **ORM**: Spring Data JPA / Hibernate
-- **Database**: MySQL 8.0 (AWS RDS)
-- **API Documentation**: SpringDoc OpenAPI Swagger UI 1.7.0
+- Java 11
+- Spring Boot 2.7.12
+- Spring Data JPA
+- Spring Validation
+- Thymeleaf
 
-### Key Libraries
-- **Lombok**: 보일러플레이트 코드 감소
-- **Validation**: Spring Boot Validation
-- **AWS**: Spring Cloud AWS (S3 연동 등)
-- **Image Processing**: Thumbnailator (이미지 썸네일 생성)
+### Database
+- MySQL 8.0
+- AWS RDS
 
-## 📁 프로젝트 구조
+### Infra / Tools
+- AWS S3
+- AWS Elastic Beanstalk
+- GitHub Actions
+- Gradle
+- Swagger UI
 
-```
+### Libraries
+- Lombok
+- Thumbnailator
+
+## 프로젝트 구조
+
+```text
 src/main/java/com/example/simpleboard/
 ├── board/                      # 게시판(Board) 영역
-│   ├── controller/             # REST API 컨트롤러
-│   ├── db/                     # JPA Entity 및 Repository
-│   ├── model/                  # DTO 및 Request/Response
-│   └── service/                # 비즈니스 로직 및 Converter
-├── post/                       # 게시물(Post) 영역
-│   ├── Controller/
+│   ├── controller/
+│   ├── db/
+│   ├── model/
+│   └── service/
+├── post/                       # 게시글(Post) 영역
+│   ├── controller/
 │   ├── db/
 │   ├── model/
 │   └── service/
 ├── reply/                      # 댓글(Reply) 영역
-│   ├── Controller/
+│   ├── controller/
 │   ├── db/
 │   ├── model/
 │   └── service/
-├── crud/                       # CRUD 추상화 레이어
-│   ├── Converter.java          # 엔티티-DTO 변환 추상 클래스
-│   ├── CRUDAbstractService.java# 공통 CRUD 서비스
-│   ├── CRUDAbstractApiController.java
-│   └── CRUDInterface.java
-├── common/                     # 공통 유틸리티
-│   ├── Api.java                # API 응답 래퍼
-│   └── Pagination.java         # 페이지네이션 처리
+├── crud/                       # 공통 CRUD 추상화
+├── common/                     # 공통 응답 / 유틸
 ├── config/                     # 설정 클래스
-│   ├── OpenApiConfig.java      # Swagger 설정
-│   └── api-docs.yaml           # OpenAPI 명세
-└── SimpleBoardApplication.java # Spring Boot 메인 클래스
+└── SimpleBoardApplication.java
 ```
 
-## 🚀 시작하기
+## 아키텍처
 
-### 사전 요구사항
+```text
+Client
+  ↓
+Controller
+  ↓
+Service
+  ↓
+Repository
+  ↓
+MySQL
+```
+
+추가로 파일 업로드 기능은 AWS S3와 연동하고, 배포는 AWS Elastic Beanstalk 환경을 기준으로 구성했습니다.
+
+## 실행 방법
+
+### 1. 환경 준비
 - Java 11 이상
-- Gradle 6.0 이상
-- MySQL 8.0 이상 (또는 AWS RDS)
+- Gradle
+- MySQL 8.0 이상
 
-### 설치 및 실행
+### 2. 환경 변수 설정
+민감정보(DB 계정, 비밀번호, AWS 키)는 저장소에 직접 포함하지 않고 환경 변수 또는 별도 설정 파일로 관리합니다.
 
-1. **저장소 클론**
-   ```bash
-   git clone https://github.com/yourusername/SimpleBoard.git
-   cd SimpleBoard
-   ```
+예시:
 
-2. **데이터베이스 설정**
-   
-   `src/main/resources/application.yaml` 파일을 수정하여 데이터베이스 연결정보를 설정합니다:
-   ```yaml
-   spring:
-     datasource:
-       driver-class-name: com.mysql.cj.jdbc.Driver
-       url: jdbc:mysql://localhost:3306/simple_board?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-       username: your_username
-       password: your_password
-   ```
+```yaml
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
 
-3. **애플리케이션 빌드 및 실행**
-   ```bash
-   # Gradle을 사용한 빌드
-   ./gradlew build
-   
-   # 애플리케이션 실행
-   ./gradlew bootRun
-   ```
+cloud:
+  aws:
+    credentials:
+      access-key: ${AWS_ACCESS_KEY}
+      secret-key: ${AWS_SECRET_KEY}
+    s3:
+      bucket: ${S3_BUCKET}
+```
 
-4. **API 문서 확인**
-   
-   애플리케이션이 실행된 후, 다음 URL에서 Swagger UI를 통해 API 명세를 확인할 수 있습니다:
-   ```
-   http://localhost:8080/swagger-ui.html
-   ```
+### 3. 애플리케이션 실행
 
-## 📚 API 엔드포인트
+```bash
+./gradlew clean build
+./gradlew bootRun
+```
 
-### 게시판(Board) API
-| HTTP | 엔드포인트 | 설명 |
-|------|-----------|------|
-| POST | `/api/board` | 새 게시판 생성 |
-| GET | `/api/board/id/{id}` | 특정 게시판 조회 |
-| GET | `/api/board/ids` | 모든 게시판 조회 |
+### 4. Swagger 확인
 
-### 게시물(Post) API
-| HTTP | 엔드포인트 | 설명 |
-|------|-----------|------|
-| POST | `/api/post` | 새 게시물 작성 |
-| POST | `/api/post/view` | 게시물 상세 조회 |
-| GET | `/api/post/all` | 게시물 목록 조회 (페이지네이션) |
+```text
+http://localhost:8080/swagger-ui.html
+```
 
-### 댓글(Reply) API
-| HTTP | 엔드포인트 | 설명 |
-|------|-----------|------|
+## API 엔드포인트 예시
+
+### 게시판(Board)
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/api/board` | 게시판 생성 |
+| GET | `/api/board/id/{id}` | 게시판 단건 조회 |
+| GET | `/api/board/ids` | 게시판 목록 조회 |
+
+### 게시글(Post)
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/api/post` | 게시글 작성 |
+| POST | `/api/post/view` | 게시글 상세 조회 |
+| GET | `/api/post/all` | 게시글 목록 조회 |
+
+### 댓글(Reply)
+| Method | Endpoint | Description |
+|---|---|---|
 | POST | `/api/reply` | 댓글 작성 |
 | GET | `/api/reply/{id}` | 댓글 조회 |
 | DELETE | `/api/reply/{id}` | 댓글 삭제 |
 
-## 🏗️ 아키텍처 특징
+## 구현 포인트
 
-### CRUD 추상화
-- 반복되는 CRUD 로직을 추상 클래스로 통합
-- `CRUDInterface`, `CRUDAbstractService`, `CRUDAbstractApiController`를 통한 구현 강제
-- 코드 중복 감소 및 일관성 유지
+### 1. 도메인 분리
+게시판(Board), 게시글(Post), 댓글(Reply)을 각각 독립적인 도메인으로 나누어 구조를 설계했습니다.  
+도메인별로 controller, service, db, model 패키지를 구분해 역할이 드러나도록 구성했습니다.
 
-### DTO 변환
-- Entity와 DTO를 분리하여 API 응답 구조를 유연하게 관리
-- `Converter` 추상 클래스를 통한 일관된 변환 로직
+### 2. CRUD 추상화
+반복되는 CRUD 로직을 공통 추상화 레이어로 분리해 코드 중복을 줄이고 일관된 구조를 유지하려고 했습니다.
 
-### 계층 구조
-```
-Controller (REST API) 
-    ↓
-Service (비즈니스 로직)
-    ↓
-Repository (데이터 접근)
-    ↓
-Entity (데이터베이스)
-```
+### 3. DTO 분리
+Entity와 Request/Response DTO를 분리해 API 계층과 영속성 계층의 책임을 나누었습니다.
 
-## 🔧 주요 설정
+### 4. Validation 적용
+입력값 누락이나 형식 오류를 방지하기 위해 Validation을 적용했습니다.
 
-### 파일 업로드 설정
-```yaml
-spring:
-  servlet:
-    multipart:
-      max-file-size: 10MB
-      max-request-size: 30MB
-```
+### 5. API 문서화
+Swagger UI를 통해 API를 직접 확인하고 테스트할 수 있도록 구성했습니다.
 
-### JPA/Hibernate 설정
-```yaml
-spring:
-  jpa:
-    hibernate:
-      ddl-auto: validate
-    properties:
-      format_sql: true
-      dialect: org.hibernate.dialect.MySQL8Dialect
-```
+### 6. 파일 업로드 및 인프라 연동
+파일 업로드 기능을 구현하고, AWS S3 연동을 통해 외부 스토리지 사용 경험을 정리했습니다.
 
-## 📝 개발 가이드
+## 트러블슈팅
 
-### 새로운 엔티티 추가 시
-1. `Entity` 클래스 생성
-2. `Repository` 인터페이스 생성 (JpaRepository 상속)
-3. `Dto`와 `Request` 모델 클래스 생성
-4. `Converter` 클래스 구현 (Converter 추상 클래스 상속)
-5. `Service` 클래스 구현 (CRUDAbstractService 상속)
-6. `Controller` 클래스 구현 (CRUDAbstractApiController 상속)
+### 1. Builder 사용 시 기본값 유지 문제
+Lombok `@Builder` 사용 시 컬렉션 필드의 기본값이 유지되지 않는 문제가 있어 `@Builder.Default`를 적용했습니다.  
+이를 통해 null 발생 가능성을 줄이고 객체 생성 안정성을 높였습니다.
 
-## 🔐 보안 고려사항
+### 2. 배포 자동화 구성
+로컬 환경에서만 동작하는 프로젝트가 아니라, GitHub Actions를 통해 빌드 후 배포까지 이어지는 흐름을 구성하며 배포 자동화 과정을 경험했습니다.
 
-현재 버전에서 다음 사항들은 프로덕션 환경 적용 전에 개선이 필요합니다:
-- 인증(Authentication) 및 인가(Authorization) 기능 추가 필요
-- 데이터베이스 비밀번호를 환경변수로 관리
-- 입력값 검증 강화
-- HTTPS 설정
-- CORS 정책 구성
+### 3. 환경 분리의 필요성
+개발 과정에서 DB 연결 정보나 파일 경로 같은 설정값이 환경에 따라 달라질 수 있음을 확인했고, 환경 변수와 설정 분리의 중요성을 배웠습니다.
 
-## 📄 라이선스
+## 개선 예정 사항
 
-이 프로젝트는 학습 목적으로 제작되었습니다.
+- 비밀번호 해시 처리 적용
+- 테스트 코드 보강
+- 예외 처리 공통화
+- 로컬/운영 환경 설정 분리
+- 인증/인가 기능 추가
+- Docker 기반 실행 환경 구성
 
-## 👤 저자
+## 회고
 
-황의진 (Backend Developer)
+SimpleBoard는 게시판 CRUD를 구현하는 데서 끝나지 않고,  
+JPA 기반 도메인 설계, API 문서화, 파일 업로드, AWS 연동과 배포 흐름까지 경험해본 프로젝트입니다.
 
-## 📞 연락처
+이 프로젝트를 통해 다음과 같은 점을 배웠습니다.
 
-문의사항이나 피드백은 이슈(Issue)를 통해 제출해주시면 감사하겠습니다.
+- 도메인 중심으로 백엔드 구조를 설계하는 방법
+- Entity와 DTO를 분리해야 하는 이유
+- Validation과 문서화가 API 품질에 미치는 영향
+- 로컬 개발과 운영 환경의 차이
+- 배포 자동화의 필요성과 기본 흐름
+
+## 링크
+
+- **GitHub Repository**: https://github.com/uijin7/SimpleBoard
+- **배포 주소**: [배포 URL]
+- **Swagger 주소**: [Swagger URL]
