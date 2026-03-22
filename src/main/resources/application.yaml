@@ -1,32 +1,28 @@
+server:
+  port: ${SERVER_PORT:8082}
+
 spring:
   jpa:
     show-sql: true
+    database-platform: ${JPA_DIALECT:org.hibernate.dialect.H2Dialect}
     properties:
-      format_sql: true
-      dialect: org.hibernate.dialect.MySQL8Dialect
+      hibernate:
+        format_sql: true
     hibernate:
-      ddl-auto: validate
-#    database: mysql
-#    generate-ddl: true
+      ddl-auto: ${DDL_AUTO:update}
 
   servlet:
     multipart:
-      enabled: 'true'
+      enabled: true
       max-request-size: 30MB
       max-file-size: 10MB
-      location: C:\Users\user\IdeaProjects\simple-board
+      location: ${UPLOAD_PATH:./upload}
 
-
-#  datasource:
-#    driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://localhost:3306/simple_board?useSSL=false&useUnicode=true&allowPublicKeyRetrieval=true
-#    username: uijin
-#    password: 1234
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://db1.cx8i5g9qkraw.ap-northeast-2.rds.amazonaws.com:3306/simple_board?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-    username: admin
-    password: 12do0423
+    driver-class-name: ${DB_DRIVER:org.h2.Driver}
+    url: ${DB_URL:jdbc:h2:mem:simple_board;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE}
+    username: ${DB_USERNAME:sa}
+    password: ${DB_PASSWORD:}
 
 springdoc:
   default-consumes-media-type: application/json
@@ -35,28 +31,25 @@ springdoc:
     groups:
       enabled: true
   swagger-ui:
-    operations-sorter: alpha # alpha(알파벳 오름차순), method(HTTP메소드순)
-    tags-sorter: alpha # 태그 정렬 기준
-    path: /swagger-ui.html # html 문서 접속 경로
+    operations-sorter: alpha
+    tags-sorter: alpha
+    path: /swagger-ui.html
     disable-swagger-default-url: true
     display-query-params-without-oauth2: true
-    doc-expansion: none # tag, operation 펼치는 방식
+    doc-expansion: none
   paths-to-match:
     - /**
 
 cloud:
   aws:
+    credentials:
+      instance-profile: false
+      access-key: ${AWS_ACCESS_KEY:}
+      secret-key: ${AWS_SECRET_KEY:}
     s3:
-      bucket: s3-simple-board
+      bucket: ${S3_BUCKET:}
     region:
-      static: ap-northeast-2
+      auto: false
+      static: ${AWS_REGION:ap-northeast-2}
     stack:
       auto: false
-    credentials:
-      access-key:
-      secret-key:
-
-#org:
-#  zerock:
-#    upload:
-#      path: /home/ec2-user/upload

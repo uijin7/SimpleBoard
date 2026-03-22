@@ -35,3 +35,17 @@ out/
 
 ### VS Code ###
 .vscode/
+
+# local secret config
+src/main/resources/application-local.yaml
+src/main/resources/application-secret.yaml
+.env
+.env.*
+
+# uploads
+upload/
+
+# local build cache/logs
+.gradle-user-home/
+bootrun.out.log
+bootrun.err.log
