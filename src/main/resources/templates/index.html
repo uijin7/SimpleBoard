@@ -53,6 +53,10 @@
             background: #6b7280;
         }
 
+        .danger {
+            background: #d93025 !important;
+        }
+
         .board-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
@@ -116,6 +120,22 @@
             font-size: 14px;
             line-height: 1.5;
             white-space: pre-wrap;
+            margin-bottom: 10px;
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .post-actions button {
+            border: none;
+            background: #2d6cdf;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
         }
 
         .empty-box {
@@ -188,6 +208,16 @@
                                 : `
                                     <div class="post-list">
                                         ${posts.map(post => {
+                                            const normalizedPost = {
+                                                id: post.id,
+                                                boardId: post.board_id ?? post.boardId ?? board.id,
+                                                userName: post.user_name ?? post.userName ?? "",
+                                                email: post.email ?? "",
+                                                title: post.title ?? "",
+                                                content: post.content ?? ""
+                                            };
+
+                                            const json = encodeURIComponent(JSON.stringify(normalizedPost));
                                             const title = post.title ?? "제목 없음";
                                             const userName = post.user_name ?? post.userName ?? "작성자 없음";
                                             const content = post.content ?? "";
@@ -201,6 +231,10 @@
                                                         ${postedAt ? ` | 작성일: ${escapeHtml(formatDate(postedAt))}` : ""}
                                                     </div>
                                                     <div class="post-content">${escapeHtml(content)}</div>
+                                                    <div class="post-actions">
+                                                        <button type="button" onclick="goEdit('${json}')">수정</button>
+                                                        <button type="button" class="danger" onclick="deletePost(${post.id})">삭제</button>
+                                                    </div>
                                                 </div>
                                             `;
                                         }).join("")}
@@ -212,6 +246,46 @@
                 }).join("")}
             </div>
         `;
+    }
+
+    function goEdit(encodedPost) {
+        const post = JSON.parse(decodeURIComponent(encodedPost));
+        sessionStorage.setItem("editPost", JSON.stringify(post));
+        location.href = `/posts/edit/${post.id}`;
+    }
+
+    async function deletePost(postId) {
+        const password = prompt("삭제할 게시글의 비밀번호 4자리를 입력하세요.");
+        if (password === null) return;
+
+        if (password.trim().length !== 4) {
+            alert("비밀번호는 4자리여야 합니다.");
+            return;
+        }
+
+        try {
+            const response = await fetch("/api/post/delete", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    post_id: postId,
+                    password: password.trim()
+                })
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(errorText || "삭제 실패");
+            }
+
+            alert("게시글 삭제 완료");
+            loadBoards();
+        } catch (error) {
+            console.error(error);
+            alert(error.message || "오류가 발생했습니다.");
+        }
     }
 
     function formatDate(value) {
