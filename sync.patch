@@ -1,0 +1,687 @@
+diff --git a/.gitignore b/.gitignore
+index c2065bc..50fe40c 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -35,3 +35,17 @@ out/
+ 
+ ### VS Code ###
+ .vscode/
++
++# local secret config
++src/main/resources/application-local.yaml
++src/main/resources/application-secret.yaml
++.env
++.env.*
++
++# uploads
++upload/
++
++# local build cache/logs
++.gradle-user-home/
++bootrun.out.log
++bootrun.err.log
+diff --git a/README.md b/README.md
+index 396f64e..969b211 100644
+--- a/README.md
++++ b/README.md
+@@ -1,216 +1,216 @@
+-# SimpleBoard
+-
+-Spring Boot 기반의 멀티 게시판 백엔드 서비스입니다.  
+-게시판(Board) - 게시글(Post) - 댓글(Reply) 구조를 설계하고, CRUD API, 파일 업로드, 입력값 검증, Swagger 문서화, AWS 연동을 적용한 프로젝트입니다.
+-
+-## 프로젝트 소개
+-
+-SimpleBoard는 게시판, 게시글, 댓글 도메인을 중심으로 백엔드 API를 구현한 프로젝트입니다.  
+-단순 CRUD 구현에 그치지 않고, JPA 기반의 데이터 설계, Validation을 활용한 요청값 검증, Swagger를 통한 API 문서화, AWS 연동까지 경험하는 것을 목표로 개발했습니다.
+-
+-- **프로젝트명**: SimpleBoard
+-- **개발 형태**: 개인 프로젝트
+-- **개발 기간**: 2023.06(완료) -> 2026.03(리뉴얼 중)
+-- **배포 주소**: [작성]
+-- **Swagger 주소**: `http://localhost:8080/swagger-ui.html`
+-
+-## 주요 기능
+-
+-- 여러 개의 게시판 생성 및 관리
+-- 게시글 등록, 조회, 수정, 삭제
+-- 댓글 등록, 조회, 삭제
+-- 페이지네이션 기반 게시글 목록 조회
+-- 첨부파일 업로드 기능
+-- Swagger UI 기반 API 문서화
+-- Validation 기반 입력값 검증
+-
+-## 기술 스택
+-
+-### Backend
+-- Java 11
+-- Spring Boot 2.7.12
+-- Spring Data JPA
+-- Spring Validation
+-- Thymeleaf
+-
+-### Database
+-- MySQL 8.0
+-- AWS RDS
+-
+-### Infra / Tools
+-- AWS S3
+-- AWS Elastic Beanstalk
+-- GitHub Actions
+-- Gradle
+-- Swagger UI
+-
+-### Libraries
+-- Lombok
+-- Thumbnailator
+-
+-## 프로젝트 구조
+-
+-```text
+-src/main/java/com/example/simpleboard/
+-├── board/                      # 게시판(Board) 영역
+-│   ├── controller/
+-│   ├── db/
+-│   ├── model/
+-│   └── service/
+-├── post/                       # 게시글(Post) 영역
+-│   ├── controller/
+-│   ├── db/
+-│   ├── model/
+-│   └── service/
+-├── reply/                      # 댓글(Reply) 영역
+-│   ├── controller/
+-│   ├── db/
+-│   ├── model/
+-│   └── service/
+-├── crud/                       # 공통 CRUD 추상화
+-├── common/                     # 공통 응답 / 유틸
+-├── config/                     # 설정 클래스
+-└── SimpleBoardApplication.java
+-```
+-
+-## 아키텍처
+-
+-```text
+-Client
+-  ↓
+-Controller
+-  ↓
+-Service
+-  ↓
+-Repository
+-  ↓
+-MySQL
+-```
+-
+-추가로 파일 업로드 기능은 AWS S3와 연동하고, 배포는 AWS Elastic Beanstalk 환경을 기준으로 구성했습니다.
+-
+-## 실행 방법
+-
+-### 1. 환경 준비
+-- Java 11 이상
+-- Gradle
+-- MySQL 8.0 이상
+-
+-### 2. 환경 변수 설정
+-민감정보(DB 계정, 비밀번호, AWS 키)는 저장소에 직접 포함하지 않고 환경 변수 또는 별도 설정 파일로 관리합니다.
+-
+-예시:
+-
+-```yaml
+-spring:
+-  datasource:
+-    driver-class-name: com.mysql.cj.jdbc.Driver
+-    url: ${DB_URL}
+-    username: ${DB_USERNAME}
+-    password: ${DB_PASSWORD}
+-
+-cloud:
+-  aws:
+-    credentials:
+-      access-key: ${AWS_ACCESS_KEY}
+-      secret-key: ${AWS_SECRET_KEY}
+-    s3:
+-      bucket: ${S3_BUCKET}
+-```
+-
+-### 3. 애플리케이션 실행
+-
+-```bash
+-./gradlew clean build
+-./gradlew bootRun
+-```
+-
+-### 4. Swagger 확인
+-
+-```text
+-http://localhost:8080/swagger-ui.html
+-```
+-
+-## API 엔드포인트 예시
+-
+-### 게시판(Board)
+-| Method | Endpoint | Description |
+-|---|---|---|
+-| POST | `/api/board` | 게시판 생성 |
+-| GET | `/api/board/id/{id}` | 게시판 단건 조회 |
+-| GET | `/api/board/ids` | 게시판 목록 조회 |
+-
+-### 게시글(Post)
+-| Method | Endpoint | Description |
+-|---|---|---|
+-| POST | `/api/post` | 게시글 작성 |
+-| POST | `/api/post/view` | 게시글 상세 조회 |
+-| GET | `/api/post/all` | 게시글 목록 조회 |
+-
+-### 댓글(Reply)
+-| Method | Endpoint | Description |
+-|---|---|---|
+-| POST | `/api/reply` | 댓글 작성 |
+-| GET | `/api/reply/{id}` | 댓글 조회 |
+-| DELETE | `/api/reply/{id}` | 댓글 삭제 |
+-
+-## 구현 포인트
+-
+-### 1. 도메인 분리
+-게시판(Board), 게시글(Post), 댓글(Reply)을 각각 독립적인 도메인으로 나누어 구조를 설계했습니다.  
+-도메인별로 controller, service, db, model 패키지를 구분해 역할이 드러나도록 구성했습니다.
+-
+-### 2. CRUD 추상화
+-반복되는 CRUD 로직을 공통 추상화 레이어로 분리해 코드 중복을 줄이고 일관된 구조를 유지하려고 했습니다.
+-
+-### 3. DTO 분리
+-Entity와 Request/Response DTO를 분리해 API 계층과 영속성 계층의 책임을 나누었습니다.
+-
+-### 4. Validation 적용
+-입력값 누락이나 형식 오류를 방지하기 위해 Validation을 적용했습니다.
+-
+-### 5. API 문서화
+-Swagger UI를 통해 API를 직접 확인하고 테스트할 수 있도록 구성했습니다.
+-
+-### 6. 파일 업로드 및 인프라 연동
+-파일 업로드 기능을 구현하고, AWS S3 연동을 통해 외부 스토리지 사용 경험을 정리했습니다.
+-
+-## 트러블슈팅
+-
+-### 1. Builder 사용 시 기본값 유지 문제
+-Lombok `@Builder` 사용 시 컬렉션 필드의 기본값이 유지되지 않는 문제가 있어 `@Builder.Default`를 적용했습니다.  
+-이를 통해 null 발생 가능성을 줄이고 객체 생성 안정성을 높였습니다.
+-
+-### 2. 배포 자동화 구성
+-로컬 환경에서만 동작하는 프로젝트가 아니라, GitHub Actions를 통해 빌드 후 배포까지 이어지는 흐름을 구성하며 배포 자동화 과정을 경험했습니다.
+-
+-### 3. 환경 분리의 필요성
+-개발 과정에서 DB 연결 정보나 파일 경로 같은 설정값이 환경에 따라 달라질 수 있음을 확인했고, 환경 변수와 설정 분리의 중요성을 배웠습니다.
+-
+-## 개선 예정 사항
+-
+-- 비밀번호 해시 처리 적용
+-- 테스트 코드 보강
+-- 예외 처리 공통화
+-- 로컬/운영 환경 설정 분리
+-- 인증/인가 기능 추가
+-- Docker 기반 실행 환경 구성
+-
+-## 회고
+-
+-SimpleBoard는 게시판 CRUD를 구현하는 데서 끝나지 않고,  
+-JPA 기반 도메인 설계, API 문서화, 파일 업로드, AWS 연동과 배포 흐름까지 경험해본 프로젝트입니다.
+-
+-이 프로젝트를 통해 다음과 같은 점을 배웠습니다.
+-
+-- 도메인 중심으로 백엔드 구조를 설계하는 방법
+-- Entity와 DTO를 분리해야 하는 이유
+-- Validation과 문서화가 API 품질에 미치는 영향
+-- 로컬 개발과 운영 환경의 차이
+-- 배포 자동화의 필요성과 기본 흐름
+-
+-## 링크
+-
+-- **GitHub Repository**: https://github.com/uijin7/SimpleBoard
+-- **배포 주소**: [배포 URL]
+-- **Swagger 주소**: [Swagger URL]
++# SimpleBoard
++
++Spring Boot 기반의 멀티 게시판 백엔드 서비스입니다.  
++게시판(Board) - 게시글(Post) - 댓글(Reply) 구조를 설계하고, CRUD API, 파일 업로드, 입력값 검증, Swagger 문서화, AWS 연동을 적용한 프로젝트입니다.
++
++## 프로젝트 소개
++
++SimpleBoard는 게시판, 게시글, 댓글 도메인을 중심으로 백엔드 API를 구현한 프로젝트입니다.  
++단순 CRUD 구현에 그치지 않고, JPA 기반의 데이터 설계, Validation을 활용한 요청값 검증, Swagger를 통한 API 문서화, AWS 연동까지 경험하는 것을 목표로 개발했습니다.
++
++- **프로젝트명**: SimpleBoard
++- **개발 형태**: 개인 프로젝트
++- **개발 기간**: 2023.06(완료) -> 2026.03(리뉴얼 중)
++- **배포 주소**: [작성]
++- **Swagger 주소**: `http://localhost:8080/swagger-ui.html`
++
++## 주요 기능
++
++- 여러 개의 게시판 생성 및 관리
++- 게시글 등록, 조회, 수정, 삭제
++- 댓글 등록, 조회, 삭제
++- 페이지네이션 기반 게시글 목록 조회
++- 첨부파일 업로드 기능
++- Swagger UI 기반 API 문서화
++- Validation 기반 입력값 검증
++
++## 기술 스택
++
++### Backend
++- Java 11
++- Spring Boot 2.7.12
++- Spring Data JPA
++- Spring Validation
++- Thymeleaf
++
++### Database
++- MySQL 8.0
++- AWS RDS
++
++### Infra / Tools
++- AWS S3
++- AWS Elastic Beanstalk
++- GitHub Actions
++- Gradle
++- Swagger UI
++
++### Libraries
++- Lombok
++- Thumbnailator
++
++## 프로젝트 구조
++
++```text
++src/main/java/com/example/simpleboard/
++├── board/                      # 게시판(Board) 영역
++│   ├── controller/
++│   ├── db/
++│   ├── model/
++│   └── service/
++├── post/                       # 게시글(Post) 영역
++│   ├── controller/
++│   ├── db/
++│   ├── model/
++│   └── service/
++├── reply/                      # 댓글(Reply) 영역
++│   ├── controller/
++│   ├── db/
++│   ├── model/
++│   └── service/
++├── crud/                       # 공통 CRUD 추상화
++├── common/                     # 공통 응답 / 유틸
++├── config/                     # 설정 클래스
++└── SimpleBoardApplication.java
++```
++
++## 아키텍처
++
++```text
++Client
++  ↓
++Controller
++  ↓
++Service
++  ↓
++Repository
++  ↓
++MySQL
++```
++
++추가로 파일 업로드 기능은 AWS S3와 연동하고, 배포는 AWS Elastic Beanstalk 환경을 기준으로 구성했습니다.
++
++## 실행 방법
++
++### 1. 환경 준비
++- Java 11 이상
++- Gradle
++- MySQL 8.0 이상
++
++### 2. 환경 변수 설정
++민감정보(DB 계정, 비밀번호, AWS 키)는 저장소에 직접 포함하지 않고 환경 변수 또는 별도 설정 파일로 관리합니다.
++
++예시:
++
++```yaml
++spring:
++  datasource:
++    driver-class-name: com.mysql.cj.jdbc.Driver
++    url: ${DB_URL}
++    username: ${DB_USERNAME}
++    password: ${DB_PASSWORD}
++
++cloud:
++  aws:
++    credentials:
++      access-key: ${AWS_ACCESS_KEY}
++      secret-key: ${AWS_SECRET_KEY}
++    s3:
++      bucket: ${S3_BUCKET}
++```
++
++### 3. 애플리케이션 실행
++
++```bash
++./gradlew clean build
++./gradlew bootRun
++```
++
++### 4. Swagger 확인
++
++```text
++http://localhost:8080/swagger-ui.html
++```
++
++## API 엔드포인트 예시
++
++### 게시판(Board)
++| Method | Endpoint | Description |
++|---|---|---|
++| POST | `/api/board` | 게시판 생성 |
++| GET | `/api/board/id/{id}` | 게시판 단건 조회 |
++| GET | `/api/board/ids` | 게시판 목록 조회 |
++
++### 게시글(Post)
++| Method | Endpoint | Description |
++|---|---|---|
++| POST | `/api/post` | 게시글 작성 |
++| POST | `/api/post/view` | 게시글 상세 조회 |
++| GET | `/api/post/all` | 게시글 목록 조회 |
++
++### 댓글(Reply)
++| Method | Endpoint | Description |
++|---|---|---|
++| POST | `/api/reply` | 댓글 작성 |
++| GET | `/api/reply/{id}` | 댓글 조회 |
++| DELETE | `/api/reply/{id}` | 댓글 삭제 |
++
++## 구현 포인트
++
++### 1. 도메인 분리
++게시판(Board), 게시글(Post), 댓글(Reply)을 각각 독립적인 도메인으로 나누어 구조를 설계했습니다.  
++도메인별로 controller, service, db, model 패키지를 구분해 역할이 드러나도록 구성했습니다.
++
++### 2. CRUD 추상화
++반복되는 CRUD 로직을 공통 추상화 레이어로 분리해 코드 중복을 줄이고 일관된 구조를 유지하려고 했습니다.
++
++### 3. DTO 분리
++Entity와 Request/Response DTO를 분리해 API 계층과 영속성 계층의 책임을 나누었습니다.
++
++### 4. Validation 적용
++입력값 누락이나 형식 오류를 방지하기 위해 Validation을 적용했습니다.
++
++### 5. API 문서화
++Swagger UI를 통해 API를 직접 확인하고 테스트할 수 있도록 구성했습니다.
++
++### 6. 파일 업로드 및 인프라 연동
++파일 업로드 기능을 구현하고, AWS S3 연동을 통해 외부 스토리지 사용 경험을 정리했습니다.
++
++## 트러블슈팅
++
++### 1. Builder 사용 시 기본값 유지 문제
++Lombok `@Builder` 사용 시 컬렉션 필드의 기본값이 유지되지 않는 문제가 있어 `@Builder.Default`를 적용했습니다.  
++이를 통해 null 발생 가능성을 줄이고 객체 생성 안정성을 높였습니다.
++
++### 2. 배포 자동화 구성
++로컬 환경에서만 동작하는 프로젝트가 아니라, GitHub Actions를 통해 빌드 후 배포까지 이어지는 흐름을 구성하며 배포 자동화 과정을 경험했습니다.
++
++### 3. 환경 분리의 필요성
++개발 과정에서 DB 연결 정보나 파일 경로 같은 설정값이 환경에 따라 달라질 수 있음을 확인했고, 환경 변수와 설정 분리의 중요성을 배웠습니다.
++
++## 개선 예정 사항
++
++- 비밀번호 해시 처리 적용
++- 테스트 코드 보강
++- 예외 처리 공통화
++- 로컬/운영 환경 설정 분리
++- 인증/인가 기능 추가
++- Docker 기반 실행 환경 구성
++
++## 회고
++
++SimpleBoard는 게시판 CRUD를 구현하는 데서 끝나지 않고,  
++JPA 기반 도메인 설계, API 문서화, 파일 업로드, AWS 연동과 배포 흐름까지 경험해본 프로젝트입니다.
++
++이 프로젝트를 통해 다음과 같은 점을 배웠습니다.
++
++- 도메인 중심으로 백엔드 구조를 설계하는 방법
++- Entity와 DTO를 분리해야 하는 이유
++- Validation과 문서화가 API 품질에 미치는 영향
++- 로컬 개발과 운영 환경의 차이
++- 배포 자동화의 필요성과 기본 흐름
++
++## 링크
++
++- **GitHub Repository**: https://github.com/uijin7/SimpleBoard
++- **배포 주소**: [배포 URL]
++- **Swagger 주소**: [Swagger URL]
+diff --git a/build.gradle b/build.gradle
+index df71b80..199e9e0 100644
+--- a/build.gradle
++++ b/build.gradle
+@@ -1,14 +1,16 @@
+ plugins {
+     id 'java'
+-    id 'org.springframework.boot' version '2.7.12'
+-    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
++    id 'org.springframework.boot' version '2.7.18'
++    id 'io.spring.dependency-management' version '1.1.7'
+ }
+ 
+ group = 'com.example'
+ version = '0.0.1-SNAPSHOT'
+ 
+ java {
+-    sourceCompatibility = '11'
++    toolchain {
++        languageVersion = JavaLanguageVersion.of(17)
++    }
+ }
+ 
+ configurations {
+@@ -25,25 +27,26 @@ dependencies {
+     implementation 'org.springframework.boot:spring-boot-starter-validation'
+     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+     implementation 'org.springframework.boot:spring-boot-starter-web'
+-    testImplementation 'org.projectlombok:lombok:1.18.26'
+-    compileOnly 'org.projectlombok:lombok'
+-    runtimeOnly 'com.mysql:mysql-connector-j'
+-    annotationProcessor 'org.projectlombok:lombok'
+-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+-
++    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+     implementation 'org.springdoc:springdoc-openapi-ui:1.7.0'
+-//    implementation 'org.springdoc:springdoc-openapi-ui:1.6.14'
+     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+     implementation 'net.coobird:thumbnailator:0.4.16'
+ 
+-    testAnnotationProcessor 'org.projectlombok:lombok' //추가
+-    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
++    compileOnly 'org.projectlombok:lombok'
++    annotationProcessor 'org.projectlombok:lombok'
++    testCompileOnly 'org.projectlombok:lombok'
++    testAnnotationProcessor 'org.projectlombok:lombok'
++
++    runtimeOnly 'com.mysql:mysql-connector-j'
++    runtimeOnly 'com.h2database:h2'
++
++    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+ }
+ 
+-//tasks.named('test') {
+-//    useJUnitPlatform()
+-//}
++tasks.named('test') {
++    useJUnitPlatform()
++}
+ 
+ jar {
+     enabled = false
+-}
+\ No newline at end of file
++}
+diff --git a/src/main/java/com/example/simpleboard/board/model/BoardRequest.java b/src/main/java/com/example/simpleboard/board/model/BoardRequest.java
+index 2429a7c..6058552 100644
+--- a/src/main/java/com/example/simpleboard/board/model/BoardRequest.java
++++ b/src/main/java/com/example/simpleboard/board/model/BoardRequest.java
+@@ -3,7 +3,6 @@ package com.example.simpleboard.board.model;
+ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+ import com.fasterxml.jackson.databind.annotation.JsonNaming;
+ import lombok.*;
+-import org.springframework.core.convert.Property;
+ 
+ import javax.validation.constraints.NotBlank;
+ 
+diff --git a/src/main/java/com/example/simpleboard/config/HomeController.java b/src/main/java/com/example/simpleboard/config/HomeController.java
+new file mode 100644
+index 0000000..622a84a
+--- /dev/null
++++ b/src/main/java/com/example/simpleboard/config/HomeController.java
+@@ -0,0 +1,13 @@
++package com.example.simpleboard.config;
++
++import org.springframework.stereotype.Controller;
++import org.springframework.web.bind.annotation.GetMapping;
++
++@Controller
++public class HomeController {
++
++    @GetMapping("/")
++    public String home() {
++        return "redirect:/swagger-ui.html";
++    }
++}
+diff --git a/src/main/java/com/example/simpleboard/post/db/PostRepository.java b/src/main/java/com/example/simpleboard/post/db/PostRepository.java
+index a024b7d..78bdf2c 100644
+--- a/src/main/java/com/example/simpleboard/post/db/PostRepository.java
++++ b/src/main/java/com/example/simpleboard/post/db/PostRepository.java
+@@ -2,7 +2,6 @@ package com.example.simpleboard.post.db;
+ 
+ import org.springframework.data.jpa.repository.JpaRepository;
+ 
+-import java.awt.print.Pageable;
+ import java.util.Optional;
+ 
+ public interface PostRepository extends JpaRepository<PostEntity, Long> {
+diff --git a/src/main/java/com/example/simpleboard/post/model/PostDto.java b/src/main/java/com/example/simpleboard/post/model/PostDto.java
+index 72a6a02..8541b14 100644
+--- a/src/main/java/com/example/simpleboard/post/model/PostDto.java
++++ b/src/main/java/com/example/simpleboard/post/model/PostDto.java
+@@ -1,12 +1,10 @@
+ package com.example.simpleboard.post.model;
+ 
+-import com.example.simpleboard.reply.db.ReplyEntity;
+ import com.example.simpleboard.reply.model.ReplyDto;
+ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+ import com.fasterxml.jackson.databind.annotation.JsonNaming;
+ import lombok.*;
+ 
+-import javax.persistence.Column;
+ import java.time.LocalDateTime;
+ import java.util.List;
+ 
+diff --git a/src/main/java/com/example/simpleboard/reply/model/ReplyDto.java b/src/main/java/com/example/simpleboard/reply/model/ReplyDto.java
+index 55c855b..01717a5 100644
+--- a/src/main/java/com/example/simpleboard/reply/model/ReplyDto.java
++++ b/src/main/java/com/example/simpleboard/reply/model/ReplyDto.java
+@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+ import com.fasterxml.jackson.databind.annotation.JsonNaming;
+ import lombok.*;
+ 
+-import javax.persistence.Column;
+ import java.time.LocalDateTime;
+ 
+ @Getter
+diff --git a/src/main/resources/application.yaml b/src/main/resources/application.yaml
+index 92c7b1e..239c05b 100644
+--- a/src/main/resources/application.yaml
++++ b/src/main/resources/application.yaml
+@@ -1,32 +1,28 @@
++server:
++  port: ${SERVER_PORT:8082}
++
+ spring:
+   jpa:
+     show-sql: true
++    database-platform: ${JPA_DIALECT:org.hibernate.dialect.H2Dialect}
+     properties:
+-      format_sql: true
+-      dialect: org.hibernate.dialect.MySQL8Dialect
++      hibernate:
++        format_sql: true
+     hibernate:
+-      ddl-auto: validate
+-#    database: mysql
+-#    generate-ddl: true
++      ddl-auto: ${DDL_AUTO:update}
+ 
+   servlet:
+     multipart:
+-      enabled: 'true'
++      enabled: true
+       max-request-size: 30MB
+       max-file-size: 10MB
+-      location: C:\Users\user\IdeaProjects\simple-board
++      location: ${UPLOAD_PATH:./upload}
+ 
+-
+-#  datasource:
+-#    driver-class-name: com.mysql.cj.jdbc.Driver
+-#    url: jdbc:mysql://localhost:3306/simple_board?useSSL=false&useUnicode=true&allowPublicKeyRetrieval=true
+-#    username: uijin
+-#    password: 1234
+   datasource:
+-    driver-class-name: com.mysql.cj.jdbc.Driver
+-    url: jdbc:mysql://db1.cx8i5g9qkraw.ap-northeast-2.rds.amazonaws.com:3306/simple_board?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+-    username: admin
+-    password: 12do0423
++    driver-class-name: ${DB_DRIVER:org.h2.Driver}
++    url: ${DB_URL:jdbc:h2:mem:simple_board;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE}
++    username: ${DB_USERNAME:sa}
++    password: ${DB_PASSWORD:}
+ 
+ springdoc:
+   default-consumes-media-type: application/json
+@@ -35,28 +31,25 @@ springdoc:
+     groups:
+       enabled: true
+   swagger-ui:
+-    operations-sorter: alpha # alpha(알파벳 오름차순), method(HTTP메소드순)
+-    tags-sorter: alpha # 태그 정렬 기준
+-    path: /swagger-ui.html # html 문서 접속 경로
++    operations-sorter: alpha
++    tags-sorter: alpha
++    path: /swagger-ui.html
+     disable-swagger-default-url: true
+     display-query-params-without-oauth2: true
+-    doc-expansion: none # tag, operation 펼치는 방식
++    doc-expansion: none
+   paths-to-match:
+     - /**
+ 
+ cloud:
+   aws:
++    credentials:
++      instance-profile: false
++      access-key: ${AWS_ACCESS_KEY:}
++      secret-key: ${AWS_SECRET_KEY:}
+     s3:
+-      bucket: s3-simple-board
++      bucket: ${S3_BUCKET:}
+     region:
+-      static: ap-northeast-2
++      auto: false
++      static: ${AWS_REGION:ap-northeast-2}
+     stack:
+       auto: false
+-    credentials:
+-      access-key:
+-      secret-key:
+-
+-#org:
+-#  zerock:
+-#    upload:
+-#      path: /home/ec2-user/upload
+\ No newline at end of file

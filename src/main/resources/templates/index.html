@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SimpleBoard</title>
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f6f8fb;
+            color: #222;
+        }
+
+        header {
+            background: #2d6cdf;
+            color: white;
+            padding: 20px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 24px auto;
+            padding: 0 16px;
+        }
+
+        .top-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .top-actions a,
+        .top-actions button {
+            border: none;
+            background: #2d6cdf;
+            color: white;
+            padding: 10px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .top-actions .secondary {
+            background: #6b7280;
+        }
+
+        .board-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 16px;
+        }
+
+        .board-card {
+            background: #fff;
+            border-radius: 14px;
+            padding: 18px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .board-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        .board-name {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .badge {
+            background: #eaf2ff;
+            color: #2d6cdf;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .post-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .post-item {
+            background: #fafafa;
+            border: 1px solid #ececec;
+            border-radius: 10px;
+            padding: 12px;
+        }
+
+        .post-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+
+        .post-meta {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .post-content {
+            font-size: 14px;
+            line-height: 1.5;
+            white-space: pre-wrap;
+        }
+
+        .empty-box {
+            color: #666;
+            padding: 10px 0;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>SimpleBoard</h1>
+</header>
+
+<div class="container">
+    <div class="top-actions">
+        <a href="/posts/write">게시글 작성</a>
+        <button class="secondary" onclick="loadBoards()">새로고침</button>
+        <a class="secondary" href="/swagger-ui.html">Swagger</a>
+    </div>
+
+    <div id="boardContainer">불러오는 중...</div>
+</div>
+
+<script>
+    let boards = [];
+
+    async function loadBoards() {
+        const boardContainer = document.getElementById("boardContainer");
+        boardContainer.innerHTML = "불러오는 중...";
+
+        try {
+            const response = await fetch("/api/board/ids");
+            if (!response.ok) {
+                throw new Error("게시판 목록 조회 실패: " + response.status);
+            }
+
+            boards = await response.json();
+            renderBoards();
+        } catch (error) {
+            console.error(error);
+            boardContainer.innerHTML = `<div class="empty-box">데이터를 불러오지 못했습니다.</div>`;
+        }
+    }
+
+    function renderBoards() {
+        const boardContainer = document.getElementById("boardContainer");
+
+        if (!Array.isArray(boards) || boards.length === 0) {
+            boardContainer.innerHTML = `<div class="empty-box">게시판 데이터가 없습니다.</div>`;
+            return;
+        }
+
+        boardContainer.innerHTML = `
+            <div class="board-grid">
+                ${boards.map(board => {
+                    const boardName = board.board_name ?? board.boardName ?? "이름 없음";
+                    const status = board.status ?? "";
+                    const posts = board.post_list ?? board.postList ?? [];
+
+                    return `
+                        <div class="board-card">
+                            <div class="board-header">
+                                <div class="board-name">${escapeHtml(boardName)}</div>
+                                <span class="badge">${escapeHtml(status)}</span>
+                            </div>
+
+                            ${
+                                posts.length === 0
+                                ? `<div class="empty-box">등록된 게시글이 없습니다.</div>`
+                                : `
+                                    <div class="post-list">
+                                        ${posts.map(post => {
+                                            const title = post.title ?? "제목 없음";
+                                            const userName = post.user_name ?? post.userName ?? "작성자 없음";
+                                            const content = post.content ?? "";
+                                            const postedAt = post.posted_at ?? post.postedAt ?? "";
+
+                                            return `
+                                                <div class="post-item">
+                                                    <div class="post-title">${escapeHtml(title)}</div>
+                                                    <div class="post-meta">
+                                                        작성자: ${escapeHtml(userName)}
+                                                        ${postedAt ? ` | 작성일: ${escapeHtml(formatDate(postedAt))}` : ""}
+                                                    </div>
+                                                    <div class="post-content">${escapeHtml(content)}</div>
+                                                </div>
+                                            `;
+                                        }).join("")}
+                                    </div>
+                                `
+                            }
+                        </div>
+                    `;
+                }).join("")}
+            </div>
+        `;
+    }
+
+    function formatDate(value) {
+        try {
+            const date = new Date(value);
+            if (Number.isNaN(date.getTime())) return value;
+            return date.toLocaleString("ko-KR");
+        } catch (e) {
+            return value;
+        }
+    }
+
+    function escapeHtml(str) {
+        return String(str)
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
+    }
+
+    loadBoards();
+</script>
+</body>
+</html>

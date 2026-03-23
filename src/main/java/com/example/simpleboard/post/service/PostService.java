@@ -7,6 +7,7 @@ import com.example.simpleboard.post.db.PostEntity;
 import com.example.simpleboard.post.db.PostRepository;
 import com.example.simpleboard.post.model.PostDto;
 import com.example.simpleboard.post.model.PostRequest;
+import com.example.simpleboard.post.model.PostUpdateRequest;
 import com.example.simpleboard.post.model.PostViewRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -20,16 +21,14 @@ import java.util.List;
 public class PostService {
 
     private final PostRepository postRepository;
-
     private final BoardRepository boardRepository;
-
     private final PostConverter postConverter;
 
     public PostDto create(PostRequest postRequest) {
 
         var boardEntity = boardRepository.findById(postRequest.getBoardId());
 
-        if(boardEntity.isEmpty()) {
+        if (boardEntity.isEmpty()) {
             throw new RuntimeException("해당 게시판을 찾을 수 없습니다. " + postRequest.getBoardId());
         }
 
@@ -42,8 +41,7 @@ public class PostService {
                 .title(postRequest.getTitle())
                 .content(postRequest.getContent())
                 .postedAt(LocalDateTime.now())
-                .build()
-                ;
+                .build();
 
         postRepository.save(response);
 
@@ -52,17 +50,19 @@ public class PostService {
 
     public PostDto view(PostViewRequest postViewRequest) {
 
-        var result = postRepository.findFirstByIdAndStatusOrderByIdDesc(postViewRequest.getPostId(), "REGISTERED")
+        var result = postRepository.findFirstByIdAndStatusOrderByIdDesc(
+                        postViewRequest.getPostId(),
+                        "REGISTERED"
+                )
                 .map(it -> {
-                    if(!it.getPassword().equals(postViewRequest.getPassword())){
+                    if (!it.getPassword().equals(postViewRequest.getPassword())) {
                         var format = "패스워드가 일치하지 않습니다. %s vs %s";
                         throw new RuntimeException(String.format(format, it.getPassword(), postViewRequest.getPassword()));
                     }
                     return it;
-                }).orElseThrow(
-                        () -> {
-                            return new RuntimeException("해당 게시글이 존재하지 않습니다 : " + postViewRequest.getPostId());
-                        }
+                })
+                .orElseThrow(() ->
+                        new RuntimeException("해당 게시글이 존재하지 않습니다 : " + postViewRequest.getPostId())
                 );
 
         return postConverter.toDto(result);
@@ -78,8 +78,7 @@ public class PostService {
                 .currentElement(list.getNumberOfElements())
                 .totalElement(list.getTotalElements())
                 .totalPage(list.getTotalPages())
-                .build()
-                ;
+                .build();
 
         return Api.<List<PostEntity>>builder()
                 .body(list.toList())
@@ -87,22 +86,50 @@ public class PostService {
                 .build();
     }
 
+    public PostDto update(PostUpdateRequest postUpdateRequest) {
+
+        var boardEntity = boardRepository.findById(postUpdateRequest.getBoardId());
+
+        if (boardEntity.isEmpty()) {
+            throw new RuntimeException("해당 게시판을 찾을 수 없습니다. " + postUpdateRequest.getBoardId());
+        }
+
+        var result = postRepository.findById(postUpdateRequest.getPostId())
+                .map(it -> {
+                    if (!it.getPassword().equals(postUpdateRequest.getPassword())) {
+                        var format = "패스워드가 일치하지 않습니다. %s vs %s";
+                        throw new RuntimeException(String.format(format, it.getPassword(), postUpdateRequest.getPassword()));
+                    }
+
+                    it.setBoard(boardEntity.get());
+                    it.setUserName(postUpdateRequest.getUserName());
+                    it.setEmail(postUpdateRequest.getEmail());
+                    it.setTitle(postUpdateRequest.getTitle());
+                    it.setContent(postUpdateRequest.getContent());
+
+                    return postRepository.save(it);
+                })
+                .orElseThrow(() ->
+                        new RuntimeException("해당 게시글이 존재하지 않습니다 : " + postUpdateRequest.getPostId())
+                );
+
+        return postConverter.toDto(result);
+    }
+
     public void delete(PostViewRequest postViewRequest) {
 
-        var result = postRepository.findById(postViewRequest.getPostId())
+        postRepository.findById(postViewRequest.getPostId())
                 .map(it -> {
-                    if(!it.getPassword().equals(postViewRequest.getPassword())){
+                    if (!it.getPassword().equals(postViewRequest.getPassword())) {
                         var format = "패스워드가 일치하지 않습니다. %s vs %s";
                         throw new RuntimeException(String.format(format, it.getPassword(), postViewRequest.getPassword()));
                     }
                     it.setStatus("UNREGISTERED");
                     postRepository.save(it);
                     return it;
-                }).orElseThrow(
-                        () -> {
-                            return new RuntimeException("해당 게시글이 존재하지 않습니다 : " + postViewRequest.getPostId());
-                        }
+                })
+                .orElseThrow(() ->
+                        new RuntimeException("해당 게시글이 존재하지 않습니다 : " + postViewRequest.getPostId())
                 );
     }
-
 }

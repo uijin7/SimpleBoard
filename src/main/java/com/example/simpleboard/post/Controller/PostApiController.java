@@ -4,6 +4,7 @@ import com.example.simpleboard.common.Api;
 import com.example.simpleboard.post.db.PostEntity;
 import com.example.simpleboard.post.model.PostDto;
 import com.example.simpleboard.post.model.PostRequest;
+import com.example.simpleboard.post.model.PostUpdateRequest;
 import com.example.simpleboard.post.model.PostViewRequest;
 import com.example.simpleboard.post.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,6 @@ public class PostApiController {
 
     @PostMapping("")
     public PostDto create(@Valid @RequestBody PostRequest postRequest) {
-
         return postService.create(postRequest);
     }
 
@@ -44,15 +44,17 @@ public class PostApiController {
     public Api<List<PostEntity>> list(
             @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.DESC)
             Pageable pageable
-    ){
-
+    ) {
         return postService.all(pageable);
+    }
+
+    @PostMapping("/update")
+    public PostDto update(@Valid @RequestBody PostUpdateRequest postUpdateRequest) {
+        return postService.update(postUpdateRequest);
     }
 
     @PostMapping("/delete")
     public void delete(@RequestBody PostViewRequest postViewRequest) {
-
         postService.delete(postViewRequest);
-
     }
 }

@@ -27,7 +27,6 @@ public class PostConverter {
                 .id(postEntity.getId())
                 .boardId(postEntity.getBoard().getId())
                 .userName(postEntity.getUserName())
-                .password(postEntity.getPassword())
                 .email(postEntity.getEmail())
                 .status(postEntity.getStatus())
                 .title(postEntity.getTitle())
