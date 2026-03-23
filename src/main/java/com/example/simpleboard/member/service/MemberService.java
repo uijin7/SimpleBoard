@@ -6,8 +6,11 @@ import com.example.simpleboard.member.model.LoginMemberDto;
 import com.example.simpleboard.member.model.MemberLoginRequest;
 import com.example.simpleboard.member.model.MemberSignupRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
@@ -24,35 +27,39 @@ public class MemberService {
     public LoginMemberDto signup(MemberSignupRequest request) {
 
         if (memberRepository.existsByLoginId(request.getLoginId())) {
-            throw new RuntimeException("이미 사용 중인 아이디입니다.");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "이미 사용 중인 아이디입니다.");
         }
 
         if (memberRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("이미 사용 중인 이메일입니다.");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "이미 사용 중인 이메일입니다.");
         }
 
-        var entity = MemberEntity.builder()
-                .loginId(request.getLoginId())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .name(request.getName())
-                .email(request.getEmail())
-                .role("USER")
-                .status("REGISTERED")
-                .createdAt(LocalDateTime.now())
-                .build();
+        try {
+            var entity = MemberEntity.builder()
+                    .loginId(request.getLoginId())
+                    .password(passwordEncoder.encode(request.getPassword()))
+                    .name(request.getName())
+                    .email(request.getEmail())
+                    .role("USER")
+                    .status("REGISTERED")
+                    .createdAt(LocalDateTime.now())
+                    .build();
 
-        var saved = memberRepository.save(entity);
+            var saved = memberRepository.save(entity);
 
-        return toDto(saved);
+            return toDto(saved);
+        } catch (DataIntegrityViolationException exception) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "이미 사용 중인 회원 정보입니다.", exception);
+        }
     }
 
     public LoginMemberDto login(MemberLoginRequest request, HttpSession session) {
 
         var member = memberRepository.findFirstByLoginIdAndStatus(request.getLoginId(), "REGISTERED")
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 아이디입니다."));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "존재하지 않는 아이디입니다."));
 
         if (!passwordEncoder.matches(request.getPassword(), member.getPassword())) {
-            throw new RuntimeException("비밀번호가 일치하지 않습니다.");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다.");
         }
 
         var loginMember = toDto(member);
