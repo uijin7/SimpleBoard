@@ -24,7 +24,7 @@ public class GlobalExceptionHandler {
         FieldError fieldError = exception.getBindingResult().getFieldError();
         String message = fieldError == null
                 ? "입력값을 확인해주세요."
-                : String.format("%s 값을 확인해주세요.", fieldError.getField());
+                : fieldError.getDefaultMessage();
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new ApiErrorResponse(message));

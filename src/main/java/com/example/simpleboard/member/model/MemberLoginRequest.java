@@ -15,9 +15,9 @@ import javax.validation.constraints.NotBlank;
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class MemberLoginRequest {
 
-    @NotBlank
+    @NotBlank(message = "아이디를 입력해주세요.")
     private String loginId;
 
-    @NotBlank
+    @NotBlank(message = "비밀번호를 입력해주세요.")
     private String password;
 }
