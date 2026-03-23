@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>회원가입</title>
+    <style>
+        body { font-family: Arial, sans-serif; background:#f6f8fb; margin:0; }
+        .wrap { max-width:520px; margin:60px auto; background:#fff; padding:24px; border-radius:14px; box-shadow:0 4px 12px rgba(0,0,0,0.08); }
+        h1 { margin-top:0; }
+        .field { margin-bottom:14px; display:flex; flex-direction:column; gap:6px; }
+        input { padding:10px 12px; border:1px solid #d8dce5; border-radius:8px; }
+        .actions { display:flex; gap:10px; }
+        button, a { background:#2d6cdf; color:#fff; border:none; padding:10px 14px; border-radius:8px; text-decoration:none; cursor:pointer; }
+        a.secondary { background:#6b7280; }
+        .message { margin-top:12px; font-weight:bold; }
+        .error { color:#d93025; }
+        .success { color:#0b8a38; }
+    </style>
+</head>
+<body>
+<div class="wrap">
+    <h1>회원가입</h1>
+
+    <form id="signupForm">
+        <div class="field">
+            <label for="loginId">아이디</label>
+            <input id="loginId" type="text" required>
+        </div>
+
+        <div class="field">
+            <label for="password">비밀번호</label>
+            <input id="password" type="password" required>
+        </div>
+
+        <div class="field">
+            <label for="name">이름</label>
+            <input id="name" type="text" required>
+        </div>
+
+        <div class="field">
+            <label for="email">이메일</label>
+            <input id="email" type="email" required>
+        </div>
+
+        <div class="actions">
+            <button type="submit">회원가입</button>
+            <a href="/login" class="secondary">로그인</a>
+            <a href="/" class="secondary">메인</a>
+        </div>
+
+        <div id="message" class="message"></div>
+    </form>
+</div>
+
+<script>
+    async function submitSignup(event) {
+        event.preventDefault();
+
+        const payload = {
+            login_id: document.getElementById("loginId").value.trim(),
+            password: document.getElementById("password").value.trim(),
+            name: document.getElementById("name").value.trim(),
+            email: document.getElementById("email").value.trim()
+        };
+
+        try {
+            const response = await fetch("/api/auth/signup", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(errorText || "회원가입 실패");
+            }
+
+            showMessage("회원가입 완료. 로그인 페이지로 이동합니다.", "success");
+
+            setTimeout(() => {
+                location.href = "/login";
+            }, 700);
+
+        } catch (error) {
+            console.error(error);
+            showMessage(error.message || "오류가 발생했습니다.", "error");
+        }
+    }
+
+    function showMessage(text, type) {
+        const el = document.getElementById("message");
+        el.textContent = text;
+        el.className = "message " + type;
+    }
+
+    document.getElementById("signupForm").addEventListener("submit", submitSignup);
+</script>
+</body>
+</html>

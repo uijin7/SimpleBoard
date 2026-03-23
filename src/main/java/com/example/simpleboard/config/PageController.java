@@ -13,11 +13,21 @@ public class PageController {
         return "index";
     }
 
+    @GetMapping("/login")
+    public String loginPage() {
+        return "login";
+    }
+
+    @GetMapping("/signup")
+    public String signupPage() {
+        return "signup";
+    }
+
     @GetMapping("/posts/write")
     public String postWritePage() {
         return "post-write";
     }
-    
+
     @GetMapping("/posts/edit/{id}")
     public String postEditPage(@PathVariable Long id, Model model) {
         model.addAttribute("postId", id);

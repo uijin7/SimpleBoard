@@ -7,88 +7,170 @@
     <style>
         * { box-sizing: border-box; }
 
+        :root {
+            --primary: #2d6cdf;
+            --primary-dark: #1f4fa8;
+            --secondary: #6b7280;
+            --danger: #d93025;
+            --bg: #f4f7fb;
+            --panel: #ffffff;
+            --panel-soft: #f8fafc;
+            --border: #e5e7eb;
+            --text: #1f2937;
+            --muted: #6b7280;
+        }
+
         body {
             margin: 0;
             font-family: Arial, sans-serif;
-            background: #f6f8fb;
-            color: #222;
+            color: var(--text);
+            background:
+                radial-gradient(circle at top left, rgba(45, 108, 223, 0.12), transparent 20%),
+                linear-gradient(180deg, #f8fbff 0%, var(--bg) 100%);
         }
 
         header {
-            background: #2d6cdf;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
-            padding: 20px;
+            padding: 28px 20px 34px;
+            box-shadow: 0 10px 28px rgba(45, 108, 223, 0.2);
+        }
+
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
         header h1 {
             margin: 0;
-            font-size: 28px;
+            font-size: 32px;
+        }
+
+        header p {
+            margin: 8px 0 0;
+            color: rgba(255, 255, 255, 0.88);
+            font-size: 15px;
         }
 
         .container {
             max-width: 1200px;
-            margin: 24px auto;
-            padding: 0 16px;
+            margin: -18px auto 32px;
+            padding: 0 16px 32px;
         }
 
-        .top-actions {
+        .toolbar {
+            background: rgba(255, 255, 255, 0.96);
+            border: 1px solid rgba(229, 231, 235, 0.9);
+            border-radius: 20px;
+            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+            padding: 18px;
             display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 22px;
         }
 
-        .top-actions a,
-        .top-actions button {
+        .toolbar-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .toolbar a,
+        .toolbar button {
             border: none;
-            background: #2d6cdf;
+            background: var(--primary);
             color: white;
-            padding: 10px 14px;
-            border-radius: 8px;
+            padding: 11px 15px;
+            border-radius: 12px;
             cursor: pointer;
             text-decoration: none;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
         }
 
-        .top-actions .secondary {
-            background: #6b7280;
+        .toolbar .secondary {
+            background: var(--secondary);
         }
 
-        .danger {
-            background: #d93025 !important;
+        .toolbar .danger {
+            background: var(--danger);
+        }
+
+        .auth-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .auth-welcome {
+            color: var(--muted);
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 18px;
+            padding: 0 4px;
+        }
+
+        .status-title {
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .status-subtitle {
+            color: var(--muted);
+            font-size: 14px;
         }
 
         .board-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-            gap: 16px;
+            gap: 18px;
         }
 
         .board-card {
-            background: #fff;
-            border-radius: 14px;
-            padding: 18px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            background: var(--panel);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+            border: 1px solid rgba(229, 231, 235, 0.9);
         }
 
         .board-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            margin-bottom: 14px;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 16px;
         }
 
         .board-name {
-            font-size: 20px;
-            font-weight: bold;
+            font-size: 22px;
+            font-weight: 700;
         }
 
         .badge {
             background: #eaf2ff;
-            color: #2d6cdf;
-            padding: 4px 10px;
+            color: var(--primary);
+            padding: 6px 11px;
             border-radius: 999px;
             font-size: 12px;
-            font-weight: bold;
+            font-weight: 700;
+            white-space: nowrap;
         }
 
         .post-list {
@@ -98,29 +180,31 @@
         }
 
         .post-item {
-            background: #fafafa;
-            border: 1px solid #ececec;
-            border-radius: 10px;
-            padding: 12px;
+            background: var(--panel-soft);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 14px;
         }
 
         .post-title {
-            font-size: 16px;
-            font-weight: bold;
+            font-size: 17px;
+            font-weight: 700;
             margin-bottom: 6px;
+            line-height: 1.4;
         }
 
         .post-meta {
             font-size: 13px;
-            color: #666;
-            margin-bottom: 8px;
+            color: var(--muted);
+            margin-bottom: 10px;
         }
 
         .post-content {
             font-size: 14px;
-            line-height: 1.5;
+            line-height: 1.6;
             white-space: pre-wrap;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
+            color: #374151;
         }
 
         .post-actions {
@@ -131,40 +215,132 @@
 
         .post-actions button {
             border: none;
-            background: #2d6cdf;
+            background: var(--primary);
             color: white;
-            padding: 8px 12px;
-            border-radius: 8px;
+            padding: 9px 12px;
+            border-radius: 10px;
             cursor: pointer;
+            font-size: 13px;
+            font-weight: 700;
         }
 
-        .empty-box {
-            color: #666;
-            padding: 10px 0;
+        .post-actions .danger {
+            background: var(--danger);
+        }
+
+        .empty-box,
+        .loading-box {
+            background: rgba(255, 255, 255, 0.72);
+            border: 1px dashed rgba(107, 114, 128, 0.35);
+            border-radius: 18px;
+            color: var(--muted);
+            padding: 26px 18px;
+            text-align: center;
+        }
+
+        @media (max-width: 720px) {
+            header {
+                padding: 24px 16px 30px;
+            }
+
+            header h1 {
+                font-size: 28px;
+            }
+
+            .container {
+                padding: 0 12px 28px;
+            }
+
+            .toolbar {
+                padding: 16px;
+                border-radius: 16px;
+            }
+
+            .toolbar,
+            .toolbar-group,
+            .auth-area,
+            .post-actions {
+                width: 100%;
+            }
+
+            .toolbar a,
+            .toolbar button,
+            .post-actions button {
+                width: 100%;
+            }
+
+            .board-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
 <header>
-    <h1>SimpleBoard</h1>
+    <div class="header-inner">
+        <h1>SimpleBoard</h1>
+        <p>게시판별 글을 확인하고, 로그인 후 새 글을 작성하거나 수정할 수 있습니다.</p>
+    </div>
 </header>
 
 <div class="container">
-    <div class="top-actions">
-        <a href="/posts/write">게시글 작성</a>
-        <button class="secondary" onclick="loadBoards()">새로고침</button>
-        <a class="secondary" href="/swagger-ui.html">Swagger</a>
+    <div class="toolbar">
+        <div class="toolbar-group">
+            <a href="/posts/write">게시글 작성</a>
+            <button type="button" class="secondary" onclick="loadBoards()">새로고침</button>
+            <a class="secondary" href="/swagger-ui.html">Swagger</a>
+        </div>
+        <div id="authArea" class="auth-area"></div>
     </div>
 
-    <div id="boardContainer">불러오는 중...</div>
+    <div class="status-bar">
+        <div class="status-title">게시판 목록</div>
+        <div class="status-subtitle">최신 게시글을 카드 형태로 확인할 수 있습니다.</div>
+    </div>
+
+    <div id="boardContainer" class="loading-box">불러오는 중...</div>
 </div>
 
 <script>
     let boards = [];
 
+    async function loadAuthArea() {
+        const authArea = document.getElementById("authArea");
+
+        try {
+            const response = await fetch("/api/auth/me");
+
+            if (!response.ok) {
+                authArea.innerHTML = `
+                    <a href="/login">로그인</a>
+                    <a href="/signup" class="secondary">회원가입</a>
+                `;
+                return;
+            }
+
+            const me = await response.json();
+            authArea.innerHTML = `
+                <span class="auth-welcome">${escapeHtml(me.name ?? "")}님</span>
+                <button type="button" class="secondary" onclick="logout()">로그아웃</button>
+            `;
+        } catch (error) {
+            console.error(error);
+            authArea.innerHTML = `
+                <a href="/login">로그인</a>
+                <a href="/signup" class="secondary">회원가입</a>
+            `;
+        }
+    }
+
+    async function logout() {
+        await fetch("/api/auth/logout", { method: "POST" });
+        location.reload();
+    }
+
     async function loadBoards() {
         const boardContainer = document.getElementById("boardContainer");
-        boardContainer.innerHTML = "불러오는 중...";
+        boardContainer.className = "loading-box";
+        boardContainer.textContent = "불러오는 중...";
 
         try {
             const response = await fetch("/api/board/ids");
@@ -176,7 +352,8 @@
             renderBoards();
         } catch (error) {
             console.error(error);
-            boardContainer.innerHTML = `<div class="empty-box">데이터를 불러오지 못했습니다.</div>`;
+            boardContainer.className = "empty-box";
+            boardContainer.textContent = "데이터를 불러오지 못했습니다.";
         }
     }
 
@@ -184,10 +361,12 @@
         const boardContainer = document.getElementById("boardContainer");
 
         if (!Array.isArray(boards) || boards.length === 0) {
-            boardContainer.innerHTML = `<div class="empty-box">게시판 데이터가 없습니다.</div>`;
+            boardContainer.className = "empty-box";
+            boardContainer.textContent = "게시판 데이터가 없습니다.";
             return;
         }
 
+        boardContainer.className = "";
         boardContainer.innerHTML = `
             <div class="board-grid">
                 ${boards.map(board => {
@@ -199,47 +378,47 @@
                         <div class="board-card">
                             <div class="board-header">
                                 <div class="board-name">${escapeHtml(boardName)}</div>
-                                <span class="badge">${escapeHtml(status)}</span>
+                                ${status ? `<span class="badge">${escapeHtml(status)}</span>` : ""}
                             </div>
 
                             ${
                                 posts.length === 0
-                                ? `<div class="empty-box">등록된 게시글이 없습니다.</div>`
-                                : `
-                                    <div class="post-list">
-                                        ${posts.map(post => {
-                                            const normalizedPost = {
-                                                id: post.id,
-                                                boardId: post.board_id ?? post.boardId ?? board.id,
-                                                userName: post.user_name ?? post.userName ?? "",
-                                                email: post.email ?? "",
-                                                title: post.title ?? "",
-                                                content: post.content ?? ""
-                                            };
+                                    ? `<div class="empty-box">등록된 게시글이 없습니다.</div>`
+                                    : `
+                                        <div class="post-list">
+                                            ${posts.map(post => {
+                                                const normalizedPost = {
+                                                    id: post.id,
+                                                    boardId: post.board_id ?? post.boardId ?? board.id,
+                                                    userName: post.user_name ?? post.userName ?? "",
+                                                    email: post.email ?? "",
+                                                    title: post.title ?? "",
+                                                    content: post.content ?? ""
+                                                };
 
-                                            const json = encodeURIComponent(JSON.stringify(normalizedPost));
-                                            const title = post.title ?? "제목 없음";
-                                            const userName = post.user_name ?? post.userName ?? "작성자 없음";
-                                            const content = post.content ?? "";
-                                            const postedAt = post.posted_at ?? post.postedAt ?? "";
+                                                const json = encodeURIComponent(JSON.stringify(normalizedPost));
+                                                const title = post.title ?? "제목 없음";
+                                                const userName = post.user_name ?? post.userName ?? "작성자 없음";
+                                                const content = post.content ?? "";
+                                                const postedAt = post.posted_at ?? post.postedAt ?? "";
 
-                                            return `
-                                                <div class="post-item">
-                                                    <div class="post-title">${escapeHtml(title)}</div>
-                                                    <div class="post-meta">
-                                                        작성자: ${escapeHtml(userName)}
-                                                        ${postedAt ? ` | 작성일: ${escapeHtml(formatDate(postedAt))}` : ""}
+                                                return `
+                                                    <div class="post-item">
+                                                        <div class="post-title">${escapeHtml(title)}</div>
+                                                        <div class="post-meta">
+                                                            작성자 ${escapeHtml(userName)}
+                                                            ${postedAt ? ` | 작성일 ${escapeHtml(formatDate(postedAt))}` : ""}
+                                                        </div>
+                                                        <div class="post-content">${escapeHtml(content)}</div>
+                                                        <div class="post-actions">
+                                                            <button type="button" onclick="goEdit('${json}')">수정</button>
+                                                            <button type="button" class="danger" onclick="deletePost(${post.id})">삭제</button>
+                                                        </div>
                                                     </div>
-                                                    <div class="post-content">${escapeHtml(content)}</div>
-                                                    <div class="post-actions">
-                                                        <button type="button" onclick="goEdit('${json}')">수정</button>
-                                                        <button type="button" class="danger" onclick="deletePost(${post.id})">삭제</button>
-                                                    </div>
-                                                </div>
-                                            `;
-                                        }).join("")}
-                                    </div>
-                                `
+                                                `;
+                                            }).join("")}
+                                        </div>
+                                    `
                             }
                         </div>
                     `;
@@ -280,7 +459,7 @@
                 throw new Error(errorText || "삭제 실패");
             }
 
-            alert("게시글 삭제 완료");
+            alert("게시글이 삭제되었습니다.");
             loadBoards();
         } catch (error) {
             console.error(error);
@@ -293,7 +472,7 @@
             const date = new Date(value);
             if (Number.isNaN(date.getTime())) return value;
             return date.toLocaleString("ko-KR");
-        } catch (e) {
+        } catch (error) {
             return value;
         }
     }
@@ -307,7 +486,10 @@
             .replaceAll("'", "&#039;");
     }
 
-    loadBoards();
+    window.addEventListener("DOMContentLoaded", async () => {
+        await loadAuthArea();
+        await loadBoards();
+    });
 </script>
 </body>
 </html>
