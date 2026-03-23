@@ -1,7 +1,7 @@
-package com.example.simpleboard.post.db;
+package com.example.simpleboard.post.entity;
 
-import com.example.simpleboard.board.db.BoardEntity;
-import com.example.simpleboard.reply.db.ReplyEntity;
+import com.example.simpleboard.board.entity.BoardEntity;
+import com.example.simpleboard.reply.entity.ReplyEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.Where;

@@ -1,4 +1,4 @@
-package com.example.simpleboard.member.db;
+package com.example.simpleboard.member.entity;
 
 import lombok.*;
 

@@ -1,7 +1,5 @@
-package com.example.simpleboard.common;
+package com.example.simpleboard.global.pagination;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.*;
 
 @Getter

@@ -1,6 +1,6 @@
 package com.example.simpleboard.post.service;
 
-import com.example.simpleboard.post.db.PostEntity;
+import com.example.simpleboard.post.entity.PostEntity;
 import com.example.simpleboard.post.model.PostDto;
 import com.example.simpleboard.reply.service.ReplyConverter;
 import lombok.RequiredArgsConstructor;

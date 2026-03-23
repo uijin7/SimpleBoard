@@ -1,12 +1,12 @@
-package com.example.simpleboard.crud;
+package com.example.simpleboard.global.crud;
 
-import com.example.simpleboard.common.Api;
+import com.example.simpleboard.global.api.Api;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface CRUDInterface<DTO> {
+public interface CrudInterface<DTO> {
 
     DTO create(DTO dto);
 

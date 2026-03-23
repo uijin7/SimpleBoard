@@ -1,6 +1,6 @@
-package com.example.simpleboard.reply.db;
+package com.example.simpleboard.reply.entity;
 
-import com.example.simpleboard.post.db.PostEntity;
+import com.example.simpleboard.post.entity.PostEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 

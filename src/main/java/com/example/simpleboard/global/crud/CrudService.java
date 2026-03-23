@@ -1,7 +1,7 @@
-package com.example.simpleboard.crud;
+package com.example.simpleboard.global.crud;
 
-import com.example.simpleboard.common.Api;
-import com.example.simpleboard.common.Pagination;
+import com.example.simpleboard.global.api.Api;
+import com.example.simpleboard.global.pagination.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,10 +10,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public abstract class CRUDAbstractService<DTO, ENTITY> implements CRUDInterface<DTO> {
+public abstract class CrudService<DTO, ENTITY> implements CrudInterface<DTO> {
 
     @Autowired(required = false)
-    private Converter<DTO, ENTITY> converter;
+    private CrudConverter<DTO, ENTITY> converter;
 
     @Autowired(required = false)
     private JpaRepository<ENTITY, Long> jpaRepository;

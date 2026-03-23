@@ -1,7 +1,7 @@
-package com.example.simpleboard.post.Controller;
+package com.example.simpleboard.post.controller;
 
-import com.example.simpleboard.common.Api;
-import com.example.simpleboard.post.db.PostEntity;
+import com.example.simpleboard.global.api.Api;
+import com.example.simpleboard.post.entity.PostEntity;
 import com.example.simpleboard.post.model.PostDto;
 import com.example.simpleboard.post.model.PostRequest;
 import com.example.simpleboard.post.model.PostUpdateRequest;

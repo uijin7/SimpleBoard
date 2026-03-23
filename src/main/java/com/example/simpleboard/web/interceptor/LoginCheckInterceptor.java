@@ -1,4 +1,4 @@
-package com.example.simpleboard.config;
+package com.example.simpleboard.web.interceptor;
 
 import com.example.simpleboard.member.service.MemberService;
 import lombok.RequiredArgsConstructor;

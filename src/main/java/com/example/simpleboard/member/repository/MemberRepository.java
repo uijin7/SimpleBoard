@@ -1,5 +1,6 @@
-package com.example.simpleboard.member.db;
+package com.example.simpleboard.member.repository;
 
+import com.example.simpleboard.member.entity.MemberEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

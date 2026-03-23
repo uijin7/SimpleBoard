@@ -1,5 +1,6 @@
-package com.example.simpleboard.post.db;
+package com.example.simpleboard.post.repository;
 
+import com.example.simpleboard.post.entity.PostEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

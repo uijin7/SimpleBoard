@@ -1,9 +1,7 @@
 package com.example.simpleboard.board.controller;
 
-import com.example.simpleboard.board.db.BoardRepository;
 import com.example.simpleboard.board.model.BoardDto;
 import com.example.simpleboard.board.model.BoardRequest;
-import com.example.simpleboard.board.service.BoardConverter;
 import com.example.simpleboard.board.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,8 +17,7 @@ import java.util.List;
 public class BoardApiController {
 
     public final BoardService boardService;
-    private final BoardRepository boardRepository;
-    private final BoardConverter boardConverter;
+
     @PostMapping("")
     public BoardDto create(
             @Valid @RequestBody BoardRequest boardRequest) {

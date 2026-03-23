@@ -1,5 +1,6 @@
 package com.example.simpleboard.config;
 
+import com.example.simpleboard.web.interceptor.LoginCheckInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;

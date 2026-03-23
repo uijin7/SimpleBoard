@@ -1,7 +1,7 @@
 package com.example.simpleboard.member.service;
 
-import com.example.simpleboard.member.db.MemberEntity;
-import com.example.simpleboard.member.db.MemberRepository;
+import com.example.simpleboard.member.entity.MemberEntity;
+import com.example.simpleboard.member.repository.MemberRepository;
 import com.example.simpleboard.member.model.LoginMemberDto;
 import com.example.simpleboard.member.model.MemberLoginRequest;
 import com.example.simpleboard.member.model.MemberSignupRequest;

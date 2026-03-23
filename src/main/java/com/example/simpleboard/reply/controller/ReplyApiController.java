@@ -1,23 +1,17 @@
-package com.example.simpleboard.reply.Controller;
+package com.example.simpleboard.reply.controller;
 
-
-import com.example.simpleboard.crud.CRUDAbstractApiController;
-import com.example.simpleboard.reply.db.ReplyEntity;
+import com.example.simpleboard.global.crud.CrudApiController;
+import com.example.simpleboard.reply.entity.ReplyEntity;
 import com.example.simpleboard.reply.model.ReplyDto;
-import com.example.simpleboard.reply.model.ReplyRequest;
-import com.example.simpleboard.reply.service.ReplyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
-import java.util.List;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/reply")
-public class ReplyApiController extends CRUDAbstractApiController<ReplyDto, ReplyEntity> {
+public class ReplyApiController extends CrudApiController<ReplyDto, ReplyEntity> {
 
 //    private final ReplyService replyService;
 //

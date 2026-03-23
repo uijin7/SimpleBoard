@@ -1,6 +1,7 @@
-package com.example.simpleboard.reply.db;
+package com.example.simpleboard.reply.repository;
 
-import com.example.simpleboard.post.db.PostEntity;
+import com.example.simpleboard.post.entity.PostEntity;
+import com.example.simpleboard.reply.entity.ReplyEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

@@ -1,7 +1,7 @@
-package com.example.simpleboard.crud;
+package com.example.simpleboard.global.crud;
 
 
-public interface Converter<DTO, ENTITY> {
+public interface CrudConverter<DTO, ENTITY> {
 
     DTO toDto(ENTITY entity);
 
