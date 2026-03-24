@@ -434,11 +434,11 @@
     }
 
     async function deletePost(postId) {
-        const password = prompt("삭제할 게시글의 비밀번호 4자리를 입력하세요.");
+        const password = prompt("삭제할 게시글의 비밀번호 4자리 이상을 입력하세요.");
         if (password === null) return;
 
-        if (password.trim().length !== 4) {
-            alert("비밀번호는 4자리여야 합니다.");
+        if (password.trim().length < 4) {
+            alert("비밀번호는 4자리 이상이어야 합니다.");
             return;
         }
 
@@ -475,6 +475,18 @@
         } catch (error) {
             return value;
         }
+    }
+
+    async function extractErrorMessage(response, fallback) {
+        const contentType = response.headers.get("content-type") || "";
+
+        if (contentType.includes("application/json")) {
+            const data = await response.json();
+            return data.message || fallback;
+        }
+
+        const text = await response.text();
+        return text || fallback;
     }
 
     function escapeHtml(str) {

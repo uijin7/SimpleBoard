@@ -201,7 +201,7 @@
 <div class="container">
     <div class="panel">
         <h2 class="panel-title">새 글 입력</h2>
-        <p class="panel-description">로그인한 회원 정보는 자동으로 채워지며, 비밀번호 4자리를 입력해야 등록할 수 있습니다.</p>
+        <p class="panel-description">로그인한 회원 정보는 자동으로 채워지며, 비밀번호 4자리 이상을 입력해야 등록할 수 있습니다.</p>
 
         <form id="postForm">
             <div class="form-grid">
@@ -212,8 +212,8 @@
 
                 <div class="field">
                     <label for="password">비밀번호</label>
-                    <input id="password" type="password" maxlength="4" inputmode="numeric" required>
-                    <div class="hint">수정 또는 삭제 시 사용할 4자리 비밀번호입니다.</div>
+                    <input id="password" type="password" minlength="4" maxlength="20" required>
+                    <div class="hint">수정 또는 삭제 시 사용할 4자리 이상 비밀번호입니다.</div>
                 </div>
 
                 <div class="field">
@@ -302,8 +302,8 @@
             content: document.getElementById("content").value.trim()
         };
 
-        if (payload.password.length !== 4) {
-            showMessage("비밀번호는 4자리여야 합니다.", "error");
+        if (payload.password.length < 4) {
+            showMessage("비밀번호는 4자리 이상이어야 합니다.", "error");
             return;
         }
 
@@ -336,6 +336,18 @@
         const message = document.getElementById("message");
         message.textContent = text;
         message.className = `message ${type}`;
+    }
+
+    async function extractErrorMessage(response, fallback) {
+        const contentType = response.headers.get("content-type") || "";
+
+        if (contentType.includes("application/json")) {
+            const data = await response.json();
+            return data.message || fallback;
+        }
+
+        const text = await response.text();
+        return text || fallback;
     }
 
     function escapeHtml(str) {

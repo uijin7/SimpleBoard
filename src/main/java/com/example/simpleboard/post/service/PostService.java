@@ -4,14 +4,16 @@ import com.example.simpleboard.board.repository.BoardRepository;
 import com.example.simpleboard.global.api.Api;
 import com.example.simpleboard.global.pagination.Pagination;
 import com.example.simpleboard.post.entity.PostEntity;
-import com.example.simpleboard.post.repository.PostRepository;
 import com.example.simpleboard.post.model.PostDto;
 import com.example.simpleboard.post.model.PostRequest;
 import com.example.simpleboard.post.model.PostUpdateRequest;
 import com.example.simpleboard.post.model.PostViewRequest;
+import com.example.simpleboard.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,14 +28,11 @@ public class PostService {
 
     public PostDto create(PostRequest postRequest) {
 
-        var boardEntity = boardRepository.findById(postRequest.getBoardId());
-
-        if (boardEntity.isEmpty()) {
-            throw new RuntimeException("해당 게시판을 찾을 수 없습니다. " + postRequest.getBoardId());
-        }
+        var boardEntity = boardRepository.findById(postRequest.getBoardId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "선택한 게시판을 찾을 수 없습니다."));
 
         var response = PostEntity.builder()
-                .board(boardEntity.get())
+                .board(boardEntity)
                 .userName(postRequest.getUserName())
                 .password(postRequest.getPassword())
                 .email(postRequest.getEmail())
@@ -56,14 +55,11 @@ public class PostService {
                 )
                 .map(it -> {
                     if (!it.getPassword().equals(postViewRequest.getPassword())) {
-                        var format = "패스워드가 일치하지 않습니다. %s vs %s";
-                        throw new RuntimeException(String.format(format, it.getPassword(), postViewRequest.getPassword()));
+                        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "게시글 비밀번호가 일치하지 않습니다.");
                     }
                     return it;
                 })
-                .orElseThrow(() ->
-                        new RuntimeException("해당 게시글이 존재하지 않습니다 : " + postViewRequest.getPostId())
-                );
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "게시글을 찾을 수 없습니다."));
 
         return postConverter.toDto(result);
     }
@@ -88,20 +84,16 @@ public class PostService {
 
     public PostDto update(PostUpdateRequest postUpdateRequest) {
 
-        var boardEntity = boardRepository.findById(postUpdateRequest.getBoardId());
-
-        if (boardEntity.isEmpty()) {
-            throw new RuntimeException("해당 게시판을 찾을 수 없습니다. " + postUpdateRequest.getBoardId());
-        }
+        var boardEntity = boardRepository.findById(postUpdateRequest.getBoardId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "선택한 게시판을 찾을 수 없습니다."));
 
         var result = postRepository.findById(postUpdateRequest.getPostId())
                 .map(it -> {
                     if (!it.getPassword().equals(postUpdateRequest.getPassword())) {
-                        var format = "패스워드가 일치하지 않습니다. %s vs %s";
-                        throw new RuntimeException(String.format(format, it.getPassword(), postUpdateRequest.getPassword()));
+                        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "게시글 수정에 실패했습니다. 비밀번호를 확인해주세요.");
                     }
 
-                    it.setBoard(boardEntity.get());
+                    it.setBoard(boardEntity);
                     it.setUserName(postUpdateRequest.getUserName());
                     it.setEmail(postUpdateRequest.getEmail());
                     it.setTitle(postUpdateRequest.getTitle());
@@ -109,9 +101,7 @@ public class PostService {
 
                     return postRepository.save(it);
                 })
-                .orElseThrow(() ->
-                        new RuntimeException("해당 게시글이 존재하지 않습니다 : " + postUpdateRequest.getPostId())
-                );
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "수정할 게시글을 찾을 수 없습니다."));
 
         return postConverter.toDto(result);
     }
@@ -121,15 +111,12 @@ public class PostService {
         postRepository.findById(postViewRequest.getPostId())
                 .map(it -> {
                     if (!it.getPassword().equals(postViewRequest.getPassword())) {
-                        var format = "패스워드가 일치하지 않습니다. %s vs %s";
-                        throw new RuntimeException(String.format(format, it.getPassword(), postViewRequest.getPassword()));
+                        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "게시글 삭제에 실패했습니다. 비밀번호를 확인해주세요.");
                     }
                     it.setStatus("UNREGISTERED");
                     postRepository.save(it);
                     return it;
                 })
-                .orElseThrow(() ->
-                        new RuntimeException("해당 게시글이 존재하지 않습니다 : " + postViewRequest.getPostId())
-                );
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "삭제할 게시글을 찾을 수 없습니다."));
     }
 }

@@ -28,7 +28,7 @@ public class PostUpdateRequest {
     private String userName;
 
     @NotBlank
-    @Size(max = 4, min = 4)
+    @Size(min = 4, max = 20, message = "게시글 비밀번호는 4자리 이상 20자리 이하로 입력해주세요.")
     private String password;
 
     @NotBlank

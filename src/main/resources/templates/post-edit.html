@@ -114,8 +114,8 @@
             </div>
 
             <div class="field">
-                <label for="password">비밀번호 (수정 확인용 4자리)</label>
-                <input id="password" type="password" maxlength="4" required>
+                <label for="password">비밀번호 (수정 확인용 4자리 이상)</label>
+                <input id="password" type="password" minlength="4" maxlength="20" required>
             </div>
 
             <div class="field">
@@ -216,8 +216,8 @@
             content: document.getElementById("content").value.trim()
         };
 
-        if (payload.password.length !== 4) {
-            showMessage("비밀번호는 4자리여야 합니다.", "error");
+        if (payload.password.length < 4) {
+            showMessage("비밀번호는 4자리 이상이어야 합니다.", "error");
             return;
         }
 
@@ -252,6 +252,18 @@
         const message = document.getElementById("message");
         message.textContent = text;
         message.className = `message ${type}`;
+    }
+
+    async function extractErrorMessage(response, fallback) {
+        const contentType = response.headers.get("content-type") || "";
+
+        if (contentType.includes("application/json")) {
+            const data = await response.json();
+            return data.message || fallback;
+        }
+
+        const text = await response.text();
+        return text || fallback;
     }
 
     function escapeHtml(str) {
