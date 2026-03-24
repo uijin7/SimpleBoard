@@ -1,0 +1,47 @@
+<svg width="1280" height="760" viewBox="0 0 1280 760" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1280" height="760" fill="#F4F7FB"/>
+  <rect width="1280" height="156" fill="url(#paint0_linear)"/>
+  <text x="88" y="84" fill="white" font-family="Arial, sans-serif" font-size="42" font-weight="700">Post Editor</text>
+  <text x="88" y="120" fill="#DCE7FF" font-family="Arial, sans-serif" font-size="20">Authenticated members can create or update posts.</text>
+
+  <rect x="72" y="188" width="1136" height="504" rx="26" fill="white" stroke="#E5E7EB"/>
+  <text x="108" y="246" fill="#111827" font-family="Arial, sans-serif" font-size="30" font-weight="700">Write a new post</text>
+  <text x="108" y="278" fill="#6B7280" font-family="Arial, sans-serif" font-size="18">Board selection, password confirmation, and content input are handled in one form.</text>
+
+  <text x="108" y="340" fill="#374151" font-family="Arial, sans-serif" font-size="18" font-weight="700">Board</text>
+  <rect x="108" y="356" width="260" height="54" rx="14" fill="#F9FAFB" stroke="#D8DCE5"/>
+  <text x="132" y="390" fill="#111827" font-family="Arial, sans-serif" font-size="18">Free Board</text>
+
+  <text x="402" y="340" fill="#374151" font-family="Arial, sans-serif" font-size="18" font-weight="700">Password</text>
+  <rect x="402" y="356" width="260" height="54" rx="14" fill="#F9FAFB" stroke="#D8DCE5"/>
+  <text x="426" y="390" fill="#9CA3AF" font-family="Arial, sans-serif" font-size="18">4-digit code</text>
+
+  <text x="696" y="340" fill="#374151" font-family="Arial, sans-serif" font-size="18" font-weight="700">Author</text>
+  <rect x="696" y="356" width="220" height="54" rx="14" fill="#F3F4F6" stroke="#D8DCE5"/>
+  <text x="720" y="390" fill="#6B7280" font-family="Arial, sans-serif" font-size="18">Logged-in name</text>
+
+  <text x="940" y="340" fill="#374151" font-family="Arial, sans-serif" font-size="18" font-weight="700">Email</text>
+  <rect x="940" y="356" width="220" height="54" rx="14" fill="#F3F4F6" stroke="#D8DCE5"/>
+  <text x="964" y="390" fill="#6B7280" font-family="Arial, sans-serif" font-size="18">member@example.com</text>
+
+  <text x="108" y="462" fill="#374151" font-family="Arial, sans-serif" font-size="18" font-weight="700">Title</text>
+  <rect x="108" y="478" width="1052" height="54" rx="14" fill="#F9FAFB" stroke="#D8DCE5"/>
+  <text x="132" y="512" fill="#9CA3AF" font-family="Arial, sans-serif" font-size="18">Enter the post title</text>
+
+  <text x="108" y="584" fill="#374151" font-family="Arial, sans-serif" font-size="18" font-weight="700">Content</text>
+  <rect x="108" y="600" width="1052" height="20" rx="10" fill="#D7DEEA"/>
+  <rect x="108" y="630" width="990" height="20" rx="10" fill="#D7DEEA"/>
+  <rect x="108" y="660" width="1030" height="20" rx="10" fill="#D7DEEA"/>
+
+  <rect x="108" y="624" width="176" height="48" rx="14" fill="#2D6CDF"/>
+  <text x="164" y="654" fill="white" font-family="Arial, sans-serif" font-size="18" font-weight="700">Submit</text>
+  <rect x="296" y="624" width="160" height="48" rx="14" fill="#6B7280"/>
+  <text x="346" y="654" fill="white" font-family="Arial, sans-serif" font-size="18" font-weight="700">Back</text>
+
+  <defs>
+    <linearGradient id="paint0_linear" x1="0" y1="0" x2="1280" y2="156" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2D6CDF"/>
+      <stop offset="1" stop-color="#1F4FA8"/>
+    </linearGradient>
+  </defs>
+</svg>

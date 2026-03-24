@@ -1,0 +1,24 @@
+<svg width="1280" height="760" viewBox="0 0 1280 760" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1280" height="760" fill="#F6F8FB"/>
+  <rect x="380" y="92" width="520" height="576" rx="28" fill="white" stroke="#E5E7EB"/>
+  <text x="444" y="178" fill="#111827" font-family="Arial, sans-serif" font-size="42" font-weight="700">Login</text>
+  <text x="444" y="214" fill="#6B7280" font-family="Arial, sans-serif" font-size="18">Session-based authentication for members</text>
+
+  <text x="444" y="286" fill="#374151" font-family="Arial, sans-serif" font-size="18" font-weight="700">Login ID</text>
+  <rect x="444" y="302" width="392" height="56" rx="14" fill="#F9FAFB" stroke="#D8DCE5"/>
+  <text x="468" y="337" fill="#9CA3AF" font-family="Arial, sans-serif" font-size="18">codextest123</text>
+
+  <text x="444" y="410" fill="#374151" font-family="Arial, sans-serif" font-size="18" font-weight="700">Password</text>
+  <rect x="444" y="426" width="392" height="56" rx="14" fill="#F9FAFB" stroke="#D8DCE5"/>
+  <text x="468" y="461" fill="#9CA3AF" font-family="Arial, sans-serif" font-size="18">••••••••</text>
+
+  <rect x="444" y="526" width="142" height="48" rx="12" fill="#2D6CDF"/>
+  <text x="491" y="556" fill="white" font-family="Arial, sans-serif" font-size="18" font-weight="700">Login</text>
+  <rect x="598" y="526" width="118" height="48" rx="12" fill="#6B7280"/>
+  <text x="624" y="556" fill="white" font-family="Arial, sans-serif" font-size="18" font-weight="700">Signup</text>
+  <rect x="728" y="526" width="108" height="48" rx="12" fill="#6B7280"/>
+  <text x="766" y="556" fill="white" font-family="Arial, sans-serif" font-size="18" font-weight="700">Home</text>
+
+  <rect x="444" y="610" width="312" height="16" rx="8" fill="#D1FAE5"/>
+  <text x="444" y="654" fill="#0B8A38" font-family="Arial, sans-serif" font-size="20" font-weight="700">After login, the user is redirected to the main page.</text>
+</svg>
