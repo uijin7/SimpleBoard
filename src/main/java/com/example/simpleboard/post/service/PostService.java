@@ -4,6 +4,7 @@ import com.example.simpleboard.board.repository.BoardRepository;
 import com.example.simpleboard.global.api.Api;
 import com.example.simpleboard.global.pagination.Pagination;
 import com.example.simpleboard.global.time.TimeProvider;
+import com.example.simpleboard.member.service.MemberService;
 import com.example.simpleboard.post.entity.PostEntity;
 import com.example.simpleboard.post.model.PostDto;
 import com.example.simpleboard.post.model.PostRequest;
@@ -16,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Service
@@ -25,6 +27,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final BoardRepository boardRepository;
     private final PostConverter postConverter;
+    private final MemberService memberService;
 
     public PostDto create(PostRequest postRequest) {
 
@@ -82,14 +85,14 @@ public class PostService {
                 .build();
     }
 
-    public PostDto update(PostUpdateRequest postUpdateRequest) {
+    public PostDto update(PostUpdateRequest postUpdateRequest, HttpSession session) {
 
         var boardEntity = boardRepository.findById(postUpdateRequest.getBoardId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "선택한 게시판을 찾을 수 없습니다."));
 
         var result = postRepository.findById(postUpdateRequest.getPostId())
                 .map(it -> {
-                    if (!it.getPassword().equals(postUpdateRequest.getPassword())) {
+                    if (!canManagePost(session, it, postUpdateRequest.getPassword())) {
                         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "게시글 수정에 실패했습니다. 비밀번호를 확인해주세요.");
                     }
 
@@ -106,11 +109,11 @@ public class PostService {
         return postConverter.toDto(result);
     }
 
-    public void delete(PostViewRequest postViewRequest) {
+    public void delete(PostViewRequest postViewRequest, HttpSession session) {
 
         postRepository.findById(postViewRequest.getPostId())
                 .map(it -> {
-                    if (!it.getPassword().equals(postViewRequest.getPassword())) {
+                    if (!canManagePost(session, it, postViewRequest.getPassword())) {
                         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "게시글 삭제에 실패했습니다. 비밀번호를 확인해주세요.");
                     }
                     it.setStatus("UNREGISTERED");
@@ -118,5 +121,17 @@ public class PostService {
                     return it;
                 })
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "삭제할 게시글을 찾을 수 없습니다."));
+    }
+
+    private boolean canManagePost(HttpSession session, PostEntity postEntity, String password) {
+        if (memberService.isAdmin(session)) {
+            return true;
+        }
+
+        if (password == null || password.isBlank()) {
+            return false;
+        }
+
+        return postEntity.getPassword().equals(password);
     }
 }

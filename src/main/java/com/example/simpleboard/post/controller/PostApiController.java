@@ -14,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -49,12 +50,12 @@ public class PostApiController {
     }
 
     @PostMapping("/update")
-    public PostDto update(@Valid @RequestBody PostUpdateRequest postUpdateRequest) {
-        return postService.update(postUpdateRequest);
+    public PostDto update(@Valid @RequestBody PostUpdateRequest postUpdateRequest, HttpSession session) {
+        return postService.update(postUpdateRequest, session);
     }
 
     @PostMapping("/delete")
-    public void delete(@RequestBody PostViewRequest postViewRequest) {
-        postService.delete(postViewRequest);
+    public void delete(@RequestBody PostViewRequest postViewRequest, HttpSession session) {
+        postService.delete(postViewRequest, session);
     }
 }

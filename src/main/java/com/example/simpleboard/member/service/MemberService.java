@@ -102,6 +102,11 @@ public class MemberService {
         return (LoginMemberDto) session.getAttribute(LOGIN_MEMBER);
     }
 
+    public boolean isAdmin(HttpSession session) {
+        var loginMember = getLoginMember(session);
+        return loginMember != null && "ADMIN".equalsIgnoreCase(loginMember.getRole());
+    }
+
     private LoginMemberDto requireAdmin(HttpSession session) {
         var loginMember = getLoginMember(session);
 
