@@ -29,7 +29,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springdoc:springdoc-openapi-ui:1.7.0'
-    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
     implementation 'net.coobird:thumbnailator:0.4.16'
     implementation 'org.springframework.security:spring-security-crypto'
 

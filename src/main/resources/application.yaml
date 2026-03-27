@@ -67,17 +67,3 @@ springdoc:
     doc-expansion: none
   paths-to-match:
     - /**
-
-cloud:
-  aws:
-    credentials:
-      instance-profile: false
-      access-key: ${AWS_ACCESS_KEY:}
-      secret-key: ${AWS_SECRET_KEY:}
-    s3:
-      bucket: ${S3_BUCKET:}
-    region:
-      auto: false
-      static: ${AWS_REGION:ap-northeast-2}
-    stack:
-      auto: false

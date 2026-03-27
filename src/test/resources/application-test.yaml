@@ -1,10 +1,4 @@
 spring:
-  autoconfigure:
-    exclude:
-      - org.springframework.cloud.aws.autoconfigure.context.ContextInstanceDataAutoConfiguration
-      - org.springframework.cloud.aws.autoconfigure.context.ContextRegionProviderAutoConfiguration
-      - org.springframework.cloud.aws.autoconfigure.context.ContextStackAutoConfiguration
-
   datasource:
     driver-class-name: org.h2.Driver
     url: jdbc:h2:mem:simpleboard-test;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
@@ -19,13 +13,3 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: create-drop
-
-cloud:
-  aws:
-    credentials:
-      access-key:
-      secret-key:
-    s3:
-      bucket:
-    stack:
-      auto: false
