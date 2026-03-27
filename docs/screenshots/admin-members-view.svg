@@ -1,0 +1,50 @@
+<svg width="1280" height="760" viewBox="0 0 1280 760" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1280" height="760" fill="#F3F7F6"/>
+  <rect x="72" y="56" width="1136" height="176" rx="26" fill="url(#paint0_linear)"/>
+  <text x="110" y="124" fill="white" font-family="Arial, sans-serif" font-size="42" font-weight="700">회원 비밀번호 관리</text>
+  <text x="110" y="162" fill="#D9FBF4" font-family="Arial, sans-serif" font-size="20">관리자만 접근 가능한 회원 목록 조회 및 비밀번호 재설정 화면</text>
+  <rect x="110" y="188" width="118" height="40" rx="12" fill="white"/>
+  <text x="140" y="214" fill="#115E59" font-family="Arial, sans-serif" font-size="16" font-weight="700">메인으로</text>
+  <rect x="242" y="188" width="118" height="40" rx="12" fill="#1B8A80"/>
+  <text x="270" y="214" fill="white" font-family="Arial, sans-serif" font-size="16" font-weight="700">새로고침</text>
+
+  <rect x="72" y="266" width="1136" height="430" rx="24" fill="white" stroke="#D7E3E1"/>
+  <text x="108" y="320" fill="#6B7280" font-family="Arial, sans-serif" font-size="14" font-weight="700">회원</text>
+  <text x="542" y="320" fill="#6B7280" font-family="Arial, sans-serif" font-size="14" font-weight="700">권한</text>
+  <text x="694" y="320" fill="#6B7280" font-family="Arial, sans-serif" font-size="14" font-weight="700">가입일</text>
+  <text x="900" y="320" fill="#6B7280" font-family="Arial, sans-serif" font-size="14" font-weight="700">비밀번호 재설정</text>
+
+  <line x1="108" y1="342" x2="1172" y2="342" stroke="#D7E3E1"/>
+
+  <text x="108" y="392" fill="#111827" font-family="Arial, sans-serif" font-size="22" font-weight="700">Admin 123</text>
+  <text x="108" y="420" fill="#6B7280" font-family="Arial, sans-serif" font-size="15">admin123 | admin123@example.com</text>
+  <rect x="542" y="370" width="88" height="34" rx="17" fill="#D1FAE5"/>
+  <text x="567" y="392" fill="#065F46" font-family="Arial, sans-serif" font-size="15" font-weight="700">ADMIN</text>
+  <text x="694" y="392" fill="#111827" font-family="Arial, sans-serif" font-size="16">2026. 3. 27. 오후 9:02</text>
+  <rect x="900" y="364" width="182" height="42" rx="12" fill="#F9FAFB" stroke="#D7E3E1"/>
+  <text x="926" y="391" fill="#9CA3AF" font-family="Arial, sans-serif" font-size="16">새 비밀번호</text>
+  <rect x="1096" y="364" width="76" height="42" rx="12" fill="#C2410C"/>
+  <text x="1119" y="391" fill="white" font-family="Arial, sans-serif" font-size="16" font-weight="700">재설정</text>
+
+  <line x1="108" y1="446" x2="1172" y2="446" stroke="#D7E3E1"/>
+
+  <text x="108" y="496" fill="#111827" font-family="Arial, sans-serif" font-size="22" font-weight="700">Codex Test</text>
+  <text x="108" y="524" fill="#6B7280" font-family="Arial, sans-serif" font-size="15">codextest123 | codextest123@example.com</text>
+  <rect x="542" y="474" width="76" height="34" rx="17" fill="#E5E7EB"/>
+  <text x="565" y="496" fill="#374151" font-family="Arial, sans-serif" font-size="15" font-weight="700">USER</text>
+  <text x="694" y="496" fill="#111827" font-family="Arial, sans-serif" font-size="16">2026. 3. 27. 오후 8:13</text>
+  <rect x="900" y="468" width="182" height="42" rx="12" fill="#F9FAFB" stroke="#D7E3E1"/>
+  <text x="926" y="495" fill="#9CA3AF" font-family="Arial, sans-serif" font-size="16">새 비밀번호</text>
+  <rect x="1096" y="468" width="76" height="42" rx="12" fill="#C2410C"/>
+  <text x="1119" y="495" fill="white" font-family="Arial, sans-serif" font-size="16" font-weight="700">재설정</text>
+
+  <rect x="108" y="578" width="468" height="16" rx="8" fill="#ECFDF5"/>
+  <text x="108" y="628" fill="#166534" font-family="Arial, sans-serif" font-size="20" font-weight="700">저장된 비밀번호를 보는 방식이 아니라, 새 비밀번호로 안전하게 재설정합니다.</text>
+
+  <defs>
+    <linearGradient id="paint0_linear" x1="72" y1="56" x2="1208" y2="232" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0F766E"/>
+      <stop offset="1" stop-color="#115E59"/>
+    </linearGradient>
+  </defs>
+</svg>
