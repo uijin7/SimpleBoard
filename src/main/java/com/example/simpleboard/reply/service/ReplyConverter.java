@@ -1,14 +1,13 @@
 package com.example.simpleboard.reply.service;
 
 import com.example.simpleboard.global.crud.CrudConverter;
+import com.example.simpleboard.global.time.TimeProvider;
 import com.example.simpleboard.post.repository.PostRepository;
 import com.example.simpleboard.reply.entity.ReplyEntity;
 import com.example.simpleboard.reply.repository.ReplyRepository;
 import com.example.simpleboard.reply.model.ReplyDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -45,7 +44,7 @@ public class ReplyConverter implements CrudConverter<ReplyDto, ReplyEntity> {
                 .content(replyDto.getContent())
                 .userName(replyDto.getUserName())
                 .password(replyDto.getPassword())
-                .repliedAt((replyDto.getRepliedAt() != null) ? replyDto.getRepliedAt() : LocalDateTime.now())
+                .repliedAt((replyDto.getRepliedAt() != null) ? replyDto.getRepliedAt() : TimeProvider.nowInKorea())
                 .build()
                 ;
     }

@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원 관리</title>
+    <style>
+        * { box-sizing: border-box; }
+
+        :root {
+            --primary: #0f766e;
+            --primary-dark: #115e59;
+            --danger: #c2410c;
+            --bg: #f3f7f6;
+            --panel: #ffffff;
+            --border: #d7e3e1;
+            --text: #1f2937;
+            --muted: #6b7280;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at top right, rgba(15, 118, 110, 0.12), transparent 24%),
+                linear-gradient(180deg, #f9fcfb 0%, var(--bg) 100%);
+        }
+
+        .page {
+            max-width: 1080px;
+            margin: 0 auto;
+            padding: 32px 16px 40px;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 18px 40px rgba(15, 118, 110, 0.22);
+            margin-bottom: 20px;
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 14px;
+        }
+
+        .toolbar a,
+        .toolbar button {
+            border: none;
+            border-radius: 12px;
+            padding: 10px 14px;
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .toolbar a,
+        .toolbar button.primary {
+            background: white;
+            color: var(--primary-dark);
+        }
+
+        .toolbar button.secondary {
+            background: rgba(255, 255, 255, 0.18);
+            color: white;
+        }
+
+        .panel {
+            background: var(--panel);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+            padding: 20px;
+        }
+
+        .message {
+            margin-bottom: 16px;
+            padding: 12px 14px;
+            border-radius: 12px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .message.show { display: block; }
+        .message.success { background: #ecfdf5; color: #166534; }
+        .message.error { background: #fff7ed; color: #9a3412; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 14px 10px;
+            border-bottom: 1px solid var(--border);
+            text-align: left;
+            vertical-align: top;
+            font-size: 14px;
+        }
+
+        th {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .role-badge {
+            display: inline-block;
+            border-radius: 999px;
+            padding: 6px 10px;
+            font-size: 12px;
+            font-weight: 700;
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .role-badge.user {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .reset-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .reset-row input {
+            min-width: 180px;
+            flex: 1;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 10px 12px;
+        }
+
+        .reset-row button {
+            border: none;
+            border-radius: 10px;
+            background: var(--danger);
+            color: white;
+            padding: 10px 14px;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .meta {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        @media (max-width: 780px) {
+            table, thead, tbody, tr, th, td { display: block; }
+            thead { display: none; }
+            tr {
+                border: 1px solid var(--border);
+                border-radius: 16px;
+                padding: 12px;
+                margin-bottom: 12px;
+            }
+            td {
+                border: none;
+                padding: 8px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="page">
+    <section class="hero">
+        <h1>회원 비밀번호 관리</h1>
+        <p>관리자만 접근할 수 있으며, 저장된 비밀번호를 보는 대신 새 비밀번호로 재설정합니다.</p>
+        <div class="toolbar">
+            <a href="/">메인으로</a>
+            <button type="button" class="secondary" onclick="loadMembers()">새로고침</button>
+        </div>
+    </section>
+
+    <section class="panel">
+        <div id="message" class="message"></div>
+        <table>
+            <thead>
+            <tr>
+                <th>회원</th>
+                <th>권한</th>
+                <th>가입일</th>
+                <th>비밀번호 재설정</th>
+            </tr>
+            </thead>
+            <tbody id="memberTableBody">
+            <tr><td colspan="4">불러오는 중...</td></tr>
+            </tbody>
+        </table>
+    </section>
+</div>
+
+<script>
+    async function loadMembers() {
+        const body = document.getElementById("memberTableBody");
+        body.innerHTML = `<tr><td colspan="4">불러오는 중...</td></tr>`;
+
+        try {
+            const meResponse = await fetch("/api/auth/me");
+            if (!meResponse.ok) {
+                location.href = "/login";
+                return;
+            }
+
+            const me = await meResponse.json();
+            if ((me.role ?? "").toUpperCase() !== "ADMIN") {
+                showMessage("관리자만 접근할 수 있습니다.", true);
+                body.innerHTML = `<tr><td colspan="4">관리자 권한이 필요합니다.</td></tr>`;
+                return;
+            }
+
+            const response = await fetch("/api/admin/members");
+            if (!response.ok) {
+                throw new Error(await extractErrorMessage(response, "회원 목록을 불러오지 못했습니다."));
+            }
+
+            const members = await response.json();
+            if (!Array.isArray(members) || members.length === 0) {
+                body.innerHTML = `<tr><td colspan="4">회원이 없습니다.</td></tr>`;
+                return;
+            }
+
+            body.innerHTML = members.map(member => `
+                <tr>
+                    <td>
+                        <strong>${escapeHtml(member.name ?? "")}</strong><br>
+                        <span class="meta">${escapeHtml(member.login_id ?? "")} | ${escapeHtml(member.email ?? "")}</span>
+                    </td>
+                    <td>
+                        <span class="role-badge ${(member.role ?? "").toUpperCase() === "ADMIN" ? "" : "user"}">${escapeHtml(member.role ?? "")}</span>
+                    </td>
+                    <td>${escapeHtml(formatDate(member.created_at ?? ""))}</td>
+                    <td>
+                        <div class="reset-row">
+                            <input id="password-${member.id}" type="password" minlength="4" placeholder="새 비밀번호">
+                            <button type="button" onclick="resetPassword(${member.id}, '${escapeJs(member.name ?? "")}')">재설정</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join("");
+        } catch (error) {
+            console.error(error);
+            showMessage(error.message || "오류가 발생했습니다.", true);
+            body.innerHTML = `<tr><td colspan="4">회원 목록을 불러오지 못했습니다.</td></tr>`;
+        }
+    }
+
+    async function resetPassword(memberId, memberName) {
+        const input = document.getElementById(`password-${memberId}`);
+        const newPassword = (input.value || "").trim();
+
+        if (newPassword.length < 4) {
+            showMessage("비밀번호는 4자 이상 입력해주세요.", true);
+            input.focus();
+            return;
+        }
+
+        if (!confirm(`${memberName} 계정의 비밀번호를 새 값으로 재설정할까요?`)) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/admin/members/${memberId}/password`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ new_password: newPassword })
+            });
+
+            if (!response.ok) {
+                throw new Error(await extractErrorMessage(response, "비밀번호를 재설정하지 못했습니다."));
+            }
+
+            input.value = "";
+            showMessage(`${memberName} 계정 비밀번호를 재설정했습니다.`, false);
+        } catch (error) {
+            console.error(error);
+            showMessage(error.message || "오류가 발생했습니다.", true);
+        }
+    }
+
+    function showMessage(message, isError) {
+        const element = document.getElementById("message");
+        element.textContent = message;
+        element.className = `message show ${isError ? "error" : "success"}`;
+    }
+
+    function formatDate(value) {
+        if (!value) return "-";
+        try {
+            const date = new Date(value);
+            if (Number.isNaN(date.getTime())) return value;
+            return date.toLocaleString("ko-KR");
+        } catch (error) {
+            return value;
+        }
+    }
+
+    async function extractErrorMessage(response, fallback) {
+        const contentType = response.headers.get("content-type") || "";
+
+        if (contentType.includes("application/json")) {
+            const data = await response.json();
+            return data.message || fallback;
+        }
+
+        const text = await response.text();
+        return text || fallback;
+    }
+
+    function escapeHtml(value) {
+        return String(value)
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
+    }
+
+    function escapeJs(value) {
+        return String(value)
+            .replaceAll("\\", "\\\\")
+            .replaceAll("'", "\\'");
+    }
+
+    window.addEventListener("DOMContentLoaded", loadMembers);
+</script>
+</body>
+</html>

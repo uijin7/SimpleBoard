@@ -321,6 +321,7 @@
             const me = await response.json();
             authArea.innerHTML = `
                 <span class="auth-welcome">${escapeHtml(me.name ?? "")}님</span>
+                ${(me.role ?? "").toUpperCase() === "ADMIN" ? `<a href="/admin/members" class="secondary">회원관리</a>` : ""}
                 <button type="button" class="secondary" onclick="logout()">로그아웃</button>
             `;
         } catch (error) {

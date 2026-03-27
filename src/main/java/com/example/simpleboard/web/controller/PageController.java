@@ -23,6 +23,11 @@ public class PageController {
         return "signup";
     }
 
+    @GetMapping("/admin/members")
+    public String adminMembersPage() {
+        return "admin-members";
+    }
+
     @GetMapping("/posts/write")
     public String postWritePage() {
         return "post-write";

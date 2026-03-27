@@ -3,6 +3,7 @@ package com.example.simpleboard.post.service;
 import com.example.simpleboard.board.repository.BoardRepository;
 import com.example.simpleboard.global.api.Api;
 import com.example.simpleboard.global.pagination.Pagination;
+import com.example.simpleboard.global.time.TimeProvider;
 import com.example.simpleboard.post.entity.PostEntity;
 import com.example.simpleboard.post.model.PostDto;
 import com.example.simpleboard.post.model.PostRequest;
@@ -15,7 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -39,7 +39,7 @@ public class PostService {
                 .status("REGISTERED")
                 .title(postRequest.getTitle())
                 .content(postRequest.getContent())
-                .postedAt(LocalDateTime.now())
+                .postedAt(TimeProvider.nowInKorea())
                 .build();
 
         postRepository.save(response);

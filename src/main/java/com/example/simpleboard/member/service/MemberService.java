@@ -1,10 +1,13 @@
 package com.example.simpleboard.member.service;
 
+import com.example.simpleboard.global.time.TimeProvider;
+import com.example.simpleboard.member.model.AdminMemberDto;
+import com.example.simpleboard.member.model.AdminPasswordResetRequest;
 import com.example.simpleboard.member.entity.MemberEntity;
-import com.example.simpleboard.member.repository.MemberRepository;
 import com.example.simpleboard.member.model.LoginMemberDto;
 import com.example.simpleboard.member.model.MemberLoginRequest;
 import com.example.simpleboard.member.model.MemberSignupRequest;
+import com.example.simpleboard.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -13,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpSession;
-import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -42,7 +44,7 @@ public class MemberService {
                     .email(request.getEmail())
                     .role("USER")
                     .status("REGISTERED")
-                    .createdAt(LocalDateTime.now())
+                    .createdAt(TimeProvider.nowInKorea())
                     .build();
 
             var saved = memberRepository.save(entity);
@@ -74,11 +76,44 @@ public class MemberService {
         }
     }
 
+    public java.util.List<AdminMemberDto> getMembersForAdmin(HttpSession session) {
+        requireAdmin(session);
+
+        return memberRepository.findAllByStatusOrderByIdDesc("REGISTERED")
+                .stream()
+                .map(this::toAdminDto)
+                .toList();
+    }
+
+    public void resetPasswordByAdmin(Long memberId, AdminPasswordResetRequest request, HttpSession session) {
+        requireAdmin(session);
+
+        var member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "회원을 찾을 수 없습니다."));
+
+        member.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        memberRepository.save(member);
+    }
+
     public LoginMemberDto getLoginMember(HttpSession session) {
         if (session == null) {
             return null;
         }
         return (LoginMemberDto) session.getAttribute(LOGIN_MEMBER);
+    }
+
+    private LoginMemberDto requireAdmin(HttpSession session) {
+        var loginMember = getLoginMember(session);
+
+        if (loginMember == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
+        }
+
+        if (!"ADMIN".equalsIgnoreCase(loginMember.getRole())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "관리자만 접근할 수 있습니다.");
+        }
+
+        return loginMember;
     }
 
     private LoginMemberDto toDto(MemberEntity entity) {
@@ -88,6 +123,18 @@ public class MemberService {
                 .name(entity.getName())
                 .email(entity.getEmail())
                 .role(entity.getRole())
+                .build();
+    }
+
+    private AdminMemberDto toAdminDto(MemberEntity entity) {
+        return AdminMemberDto.builder()
+                .id(entity.getId())
+                .loginId(entity.getLoginId())
+                .name(entity.getName())
+                .email(entity.getEmail())
+                .role(entity.getRole())
+                .status(entity.getStatus())
+                .createdAt(entity.getCreatedAt())
                 .build();
     }
 }

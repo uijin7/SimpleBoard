@@ -16,8 +16,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(loginCheckInterceptor)
                 .addPathPatterns(
+                        "/admin/**",
                         "/posts/write",
                         "/posts/edit/**",
+                        "/api/admin/**",
                         "/api/post",
                         "/api/post/update",
                         "/api/post/delete"
