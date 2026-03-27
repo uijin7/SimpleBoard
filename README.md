@@ -76,14 +76,14 @@
 
 ```mermaid
 flowchart LR
-    A[Browser / Thymeleaf Page] --> B[Spring MVC Controller]
-    B --> C[Service Layer]
-    C --> D[Spring Data JPA Repository]
-    D --> E[(Supabase PostgreSQL)]
+    A["Browser / Thymeleaf Page"] --> B["Spring MVC Controller"]
+    B --> C["Service Layer"]
+    C --> D["Spring Data JPA Repository"]
+    D --> E[("Supabase PostgreSQL")]
 
-    A --> F[/api/auth/me]
-    A --> G[/api/post]
-    A --> H[/api/admin/members]
+    A --> F["/api/auth/me"]
+    A --> G["/api/post"]
+    A --> H["/api/admin/members"]
 
     F --> B
     G --> B
